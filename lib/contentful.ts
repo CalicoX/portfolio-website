@@ -198,17 +198,17 @@ export const getNavigation = async (): Promise<NavItem[]> => {
       path: item.fields.path || '',
       icon: item.fields.icon || 'home',
       order: item.fields.order || 0,
-      mobile: item.fields.mobile ?? true, // Default to true for backward compatibility
+      mobile: item.fields.mobile || undefined, // Short text for mobile navigation
     }));
   } catch (error) {
     console.error('Error fetching navigation:', error);
     // Return default navigation on error
     return [
-      { id: '1', label: 'Home', path: '/', icon: 'home', order: 0, mobile: true },
-      { id: '2', label: 'UI Design', path: '/ui-design', icon: 'layout-template', order: 1, mobile: true },
-      { id: '3', label: 'Graphic Design', path: '/graphic-design', icon: 'pen-tool', order: 2, mobile: false },
-      { id: '4', label: 'Photos', path: '/photos', icon: 'camera', order: 3, mobile: true },
-      { id: '5', label: 'Blog', path: '/blog', icon: 'pen-tool', order: 4, mobile: true },
+      { id: '1', label: 'Home', path: '/', icon: 'home', order: 0, mobile: 'Home' },
+      { id: '2', label: 'UI Design', path: '/ui-design', icon: 'layout-template', order: 1, mobile: 'UI' },
+      { id: '3', label: 'Graphic Design', path: '/graphic-design', icon: 'pen-tool', order: 2, mobile: 'Graphic' },
+      { id: '4', label: 'Photos', path: '/photos', icon: 'camera', order: 3, mobile: 'Photos' },
+      { id: '5', label: 'Blog', path: '/blog', icon: 'pen-tool', order: 4, mobile: 'Blog' },
     ];
   }
 };

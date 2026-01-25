@@ -32,26 +32,25 @@ const MobileNav: React.FC = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md border-t border-white/10 p-4 md:hidden z-50">
       <nav className="flex justify-around items-center">
-        {navItems
-          .filter((item) => item.mobile !== false) // Only show items where mobile is true or undefined
-          .map((item) => {
-            // Trim whitespace from both paths for comparison
-            const isActive = getCurrentPath() === item.path.trim();
-            const Icon = getIcon(item.icon);
+        {navItems.map((item) => {
+          // Trim whitespace from both paths for comparison
+          const isActive = getCurrentPath() === item.path.trim();
+          const Icon = getIcon(item.icon);
+          const displayLabel = item.mobile || item.label; // Use mobile text if available, otherwise fall back to label
 
-            return (
-              <Link
-                key={item.id}
-                to={item.path.trim()}
-                className={`flex flex-col items-center gap-1 transition-colors duration-200 ${
-                  isActive ? 'text-accent' : 'text-zinc-500'
-                }`}
-              >
-                <Icon size={20} />
-                <span className="text-[10px] font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
+          return (
+            <Link
+              key={item.id}
+              to={item.path.trim()}
+              className={`flex flex-col items-center gap-1 transition-colors duration-200 ${
+                isActive ? 'text-accent' : 'text-zinc-500'
+              }`}
+            >
+              <Icon size={20} />
+              <span className="text-[10px] font-medium">{displayLabel}</span>
+            </Link>
+          );
+        })}
       </nav>
     </div>
   );

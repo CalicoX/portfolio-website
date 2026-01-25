@@ -7,7 +7,7 @@ export interface NavItem {
   path: string;
   icon: string; // Icon name from lucide-react
   order: number;
-  mobile?: boolean; // Show in mobile navigation
+  mobile?: string; // Short text for mobile navigation
 }
 
 export interface Project {
