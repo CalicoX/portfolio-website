@@ -12,34 +12,42 @@ const DotMatrixBackground: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Configuration
-    const DOT_SPACING = 20;
-    const DOT_RADIUS = 1;
-    const MAX_SCALE = 2.5; // 减小放大倍数，更微妙
-    const ACTIVATION_RADIUS = 100;
-    const SPRING_STIFFNESS = 0.08; // 降低刚度，更慢更平滑
-    const SPRING_DAMPING = 0.88; // 增加阻尼，减少回弹
-    const COLOR = 'rgba(255, 255, 255, 0.05)'; // 更暗的圆点
+    // Configuration - Pixel style
+    const DOT_SIZE = 3; // Square size for pixel look
+    const DOT_SPACING = 24;
+    const MAX_SCALE = 1.8; // More subtle scaling
+    const ACTIVATION_RADIUS = 150; // Larger radius for smoother proximity
+    const BASE_COLOR = { r: 34, g: 197, b: 94 }; // Accent green
+    const BASE_ALPHA = 0.08;
 
-    // State with velocity for spring physics
-    interface Dot {
+    // State
+    interface Pixel {
       x: number;
       y: number;
       scale: number;
-      velocity: number; // For spring animation
+      targetScale: number;
+      alpha: number;
+      targetAlpha: number;
     }
-    let dots: Dot[] = [];
+    let pixels: Pixel[] = [];
     let animationFrameId: number;
     let mouseX = -1000;
     let mouseY = -1000;
     let canvasRect = { left: 0, top: 0 };
 
-    // Initialize dots
-    const initDots = (width: number, height: number) => {
-      dots = [];
+    // Initialize pixel grid
+    const initPixels = (width: number, height: number) => {
+      pixels = [];
       for (let x = DOT_SPACING / 2; x < width + DOT_SPACING; x += DOT_SPACING) {
         for (let y = DOT_SPACING / 2; y < height + DOT_SPACING; y += DOT_SPACING) {
-          dots.push({ x, y, scale: 1, velocity: 0 });
+          pixels.push({
+            x,
+            y,
+            scale: 1,
+            targetScale: 1,
+            alpha: BASE_ALPHA,
+            targetAlpha: BASE_ALPHA
+          });
         }
       }
     };
@@ -59,7 +67,7 @@ const DotMatrixBackground: React.FC = () => {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.scale(dpr, dpr);
-      initDots(width, height);
+      initPixels(width, height);
       canvasRect = canvas.getBoundingClientRect();
     };
 
@@ -68,51 +76,64 @@ const DotMatrixBackground: React.FC = () => {
       canvasRect = canvas.getBoundingClientRect();
     };
 
-    // Setup listeners
-    window.addEventListener('mousemove', updateMousePosition);
-    window.addEventListener('resize', updateCanvasSize);
-    window.addEventListener('scroll', handleScroll, { capture: true, passive: true });
-    updateCanvasSize();
+    // Linear interpolation
+    const lerp = (start: number, end: number, factor: number) => {
+      return start + (end - start) * factor;
+    };
 
-    // Render loop with spring physics
+    // Render loop
     const render = () => {
       const width = canvas.width / (window.devicePixelRatio || 1);
       const height = canvas.height / (window.devicePixelRatio || 1);
 
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = COLOR;
 
       const relMouseX = mouseX - canvasRect.left;
       const relMouseY = mouseY - canvasRect.top;
 
-      dots.forEach(dot => {
-        // Calculate distance to mouse
-        const dx = dot.x - relMouseX;
-        const dy = dot.y - relMouseY;
+      // Update and draw pixels
+      pixels.forEach(pixel => {
+        const dx = pixel.x - relMouseX;
+        const dy = pixel.y - relMouseY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Target scale based on mouse distance
-        let targetScale = 1;
+        // Calculate proximity effect
         if (dist < ACTIVATION_RADIUS) {
-          // Smooth ease-in curve
           const factor = 1 - dist / ACTIVATION_RADIUS;
-          targetScale = 1 + (MAX_SCALE - 1) * Math.pow(factor, 2);
+          // Smooth curve for more subtle effect
+          const smoothFactor = factor * factor * (3 - 2 * factor); // Smoothstep
+          pixel.targetScale = 1 + (MAX_SCALE - 1) * smoothFactor;
+          pixel.targetAlpha = BASE_ALPHA + (0.25 - BASE_ALPHA) * smoothFactor;
+        } else {
+          pixel.targetScale = 1;
+          pixel.targetAlpha = BASE_ALPHA;
         }
 
-        // Spring physics: acceleration = stiffness * (target - current) - damping * velocity
-        const acceleration = SPRING_STIFFNESS * (targetScale - dot.scale) - SPRING_DAMPING * dot.velocity;
-        dot.velocity += acceleration;
-        dot.scale += dot.velocity;
+        // Smooth interpolation
+        pixel.scale = lerp(pixel.scale, pixel.targetScale, 0.12);
+        pixel.alpha = lerp(pixel.alpha, pixel.targetAlpha, 0.12);
 
-        // Draw dot
-        const radius = DOT_RADIUS * Math.max(0.5, dot.scale);
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
-        ctx.fill();
+        // Draw pixel (square for retro look)
+        const size = DOT_SIZE * pixel.scale;
+        const halfSize = size / 2;
+
+        ctx.fillStyle = `rgba(${BASE_COLOR.r}, ${BASE_COLOR.g}, ${BASE_COLOR.b}, ${pixel.alpha})`;
+        ctx.fillRect(
+          pixel.x - halfSize,
+          pixel.y - halfSize,
+          size,
+          size
+        );
       });
 
       animationFrameId = requestAnimationFrame(render);
     };
+
+    // Setup listeners
+    window.addEventListener('mousemove', updateMousePosition);
+    window.addEventListener('resize', updateCanvasSize);
+    window.addEventListener('scroll', handleScroll, { capture: true, passive: true });
+    updateCanvasSize();
 
     render();
 

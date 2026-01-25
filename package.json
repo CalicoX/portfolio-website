@@ -2,11 +2,13 @@
   "name": "portfolio-website",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://calicox.github.io/portfolio-website/",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@types/three": "^0.182.0",
@@ -20,6 +22,7 @@
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "gh-pages": "^6.3.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

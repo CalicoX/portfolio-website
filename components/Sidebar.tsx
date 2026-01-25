@@ -45,43 +45,41 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-surface border-r border-white/5 hidden md:flex flex-col p-8 justify-between z-20">
+    <aside className="fixed left-0 top-0 h-full w-64 bg-surface border-r border-white/5 hidden md:flex flex-col p-6 z-20">
       {/* Header / Brand */}
-      <div>
-        <div className="mb-10">
-          <h1 className="text-xl font-bold tracking-tight text-white">PORTFOLIO</h1>
-          <p className="text-xs text-secondary mt-1">CREATIVE DEVELOPER</p>
-        </div>
-
-        {/* Navigation */}
-        <nav className="space-y-1">
-          {navItems.map((item) => {
-            // Trim whitespace from both paths for comparison
-            const isActive = currentPath === item.path.trim();
-            const Icon = getIcon(item.icon);
-
-            return (
-              <Link
-                key={item.id}
-                to={item.path.trim()}
-                className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? 'bg-accent text-black'
-                    : 'text-secondary hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <Icon size={16} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+      <div className="mb-10">
+        <h1 className="text-xl font-bold tracking-tight text-white">PORTFOLIO</h1>
+        <p className="text-xs text-secondary mt-1">CREATIVE DEVELOPER</p>
       </div>
 
+      {/* Navigation */}
+      <nav className="space-y-1">
+        {navItems.map((item) => {
+          // Trim whitespace from both paths for comparison
+          const isActive = currentPath === item.path.trim();
+          const Icon = getIcon(item.icon);
+
+          return (
+            <Link
+              key={item.id}
+              to={item.path.trim()}
+              className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                isActive
+                  ? 'bg-accent text-black'
+                  : 'text-secondary hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Icon size={16} />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
       {/* Footer */}
-      <div>
+      <div className="mt-auto">
         <p className="text-xs text-zinc-600">
-          © {new Date().getFullYear()}
+          © 2025-2026 All Rights Reserved
         </p>
       </div>
     </aside>

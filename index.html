@@ -29,6 +29,7 @@
               'fade-in': 'fadeIn 0.5s ease-out forwards',
               'blink': 'blink 1s step-end infinite',
               'shake-glow': 'shakeGlow 0.15s ease-in-out infinite',
+              'shimmer': 'shimmer 1.5s ease-in-out infinite',
             },
             keyframes: {
               fadeIn: {
@@ -43,6 +44,10 @@
                 '0%, 100%': { transform: 'translateX(0)' },
                 '25%': { transform: 'translateX(-1px)' },
                 '75%': { transform: 'translateX(1px)' },
+              },
+              shimmer: {
+                '0%': { transform: 'translateX(-100%)' },
+                '100%': { transform: 'translateX(100%)' },
               }
             }
           }
@@ -57,6 +62,10 @@
       body {
         background-color: #09090b;
         color: #fafafa;
+      }
+      /* Prevent flash of unstyled content */
+      #root {
+        display: block;
       }
       /* Custom Scrollbar */
       ::-webkit-scrollbar {

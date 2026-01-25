@@ -110,3 +110,62 @@ export const PhotoGridSkeleton: React.FC = () => (
     ))}
   </div>
 );
+
+// Photos page skeleton (Coverflow style)
+export const PhotosPageSkeleton: React.FC = () => (
+  <div className="h-[calc(100vh-96px)] md:h-[calc(100vh-48px)] flex flex-col overflow-hidden -mb-24 md:-mb-12 relative">
+    {/* Header */}
+    <div className="space-y-1 flex-shrink-0">
+      <div className="h-7 bg-zinc-800/30 w-28 animate-pulse rounded"></div>
+      <div className="h-4 bg-zinc-800/30 w-48 animate-pulse rounded"></div>
+    </div>
+
+    {/* CoverFlow Container */}
+    <div className="relative flex-1 flex items-center justify-center overflow-hidden">
+      {/* Navigation Buttons */}
+      <div className="absolute left-4 w-12 h-12 bg-zinc-800/50 rounded-full animate-pulse"></div>
+      <div className="absolute right-4 w-12 h-12 bg-zinc-800/50 rounded-full animate-pulse"></div>
+
+      {/* Position Indicator */}
+      <div className="absolute top-4 right-4 px-3 py-1.5 bg-zinc-800/50 rounded-full w-16 h-8 animate-pulse"></div>
+
+      {/* Center Card with Reflection */}
+      <div className="relative">
+        <div className="w-[200px] h-[280px] bg-zinc-800/30 rounded-lg animate-pulse"></div>
+        <div className="mt-1 w-[200px] h-[60px] bg-zinc-800/20 rounded-lg animate-pulse opacity-40"></div>
+      </div>
+
+      {/* Side Cards */}
+      <div className="absolute left-16 opacity-40">
+        <div className="w-[140px] h-[200px] bg-zinc-800/30 rounded-lg animate-pulse"></div>
+        <div className="mt-1 w-[140px] h-[40px] bg-zinc-800/20 rounded-lg animate-pulse opacity-40"></div>
+      </div>
+      <div className="absolute right-16 opacity-40">
+        <div className="w-[140px] h-[200px] bg-zinc-800/30 rounded-lg animate-pulse"></div>
+        <div className="mt-1 w-[140px] h-[40px] bg-zinc-800/20 rounded-lg animate-pulse opacity-40"></div>
+      </div>
+
+      {/* Bottom Info */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+        <div className="h-5 bg-zinc-800/30 w-32 mx-auto mb-2 animate-pulse rounded"></div>
+        <div className="h-4 bg-zinc-800/30 w-24 mx-auto animate-pulse rounded"></div>
+      </div>
+    </div>
+
+    {/* Thumbnail Dock */}
+    <div className="flex-shrink-0 mt-auto mb-4 flex justify-center">
+      <div className="bg-zinc-800/40 rounded-2xl px-3 py-2">
+        <div className="flex items-end gap-1.5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className={`bg-zinc-700/50 rounded-lg animate-pulse ${
+                i === 2 ? 'w-11 h-11 ring-2 ring-zinc-600/50' : 'w-10 h-10'
+              }`}
+            ></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);

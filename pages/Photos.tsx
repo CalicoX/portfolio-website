@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { MapPin, ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { PhotoGridSkeleton } from '../components/Skeleton';
+import { PhotosPageSkeleton } from '../components/Skeleton';
 import MatrixBackground from '../components/MatrixBackground';
 import { getPhotos } from '../lib/contentful';
 import type { Photo } from '../types';
@@ -175,7 +175,7 @@ const Photos: React.FC = () => {
       `}</style>
 
       {loading ? (
-        <PhotoGridSkeleton />
+        <PhotosPageSkeleton />
       ) : (
         <>
           {/* Cover Flow */}
