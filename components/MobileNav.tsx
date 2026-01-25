@@ -10,10 +10,6 @@ const MobileNav: React.FC = () => {
   useEffect(() => {
     const fetchNav = async () => {
       const data = await getNavigation();
-      // Add Blog to navigation if not present
-      if (!data.find(item => item.path === '/blog')) {
-        data.push({ id: 'blog', label: 'Blog', path: '/blog', icon: 'pen-tool', order: 4 });
-      }
       setNavItems(data);
     };
     fetchNav();
@@ -37,7 +33,7 @@ const MobileNav: React.FC = () => {
     <div className="fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md border-t border-white/10 p-4 md:hidden z-50">
       <nav className="flex justify-around items-center">
         {navItems
-          .filter((item) => item.path.trim().toLowerCase() !== '/contact')
+          .filter((item) => item.mobile !== false) // Only show items where mobile is true or undefined
           .map((item) => {
             // Trim whitespace from both paths for comparison
             const isActive = getCurrentPath() === item.path.trim();

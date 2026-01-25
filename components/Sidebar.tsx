@@ -2,7 +2,6 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { getNavigation } from '../lib/contentful';
 import { NavItem, getIcon } from '../types';
-import { PenTool } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -12,10 +11,6 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     const fetchNav = async () => {
       const data = await getNavigation();
-      // Add Blog to navigation if not present
-      if (!data.find(item => item.path === '/blog')) {
-        data.push({ id: 'blog', label: 'Blog', path: '/blog', icon: 'pen-tool', order: 4 });
-      }
       setNavItems(data);
       setLoading(false);
     };
