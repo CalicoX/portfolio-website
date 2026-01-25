@@ -7,6 +7,8 @@ import ProjectDetailPage from './pages/ProjectDetail';
 import GraphicDesign from './pages/GraphicDesign';
 import Photos from './pages/Photos';
 import Contact from './pages/Contact';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import { getNavigation } from './lib/contentful';
 import { NavItem } from './types';
 
@@ -16,6 +18,7 @@ const PAGE_COMPONENTS: Record<string, React.ComponentType> = {
   '/graphic-design': GraphicDesign,
   '/photos': Photos,
   '/contact': Contact,
+  '/blog': Blog,
 };
 
 function App() {
@@ -60,6 +63,10 @@ function App() {
             }
             return null;
           }).filter(Boolean)}
+
+          {/* Blog routes */}
+          <Route path="blog" element={<Blog />} />
+          <Route path="blog/:slug" element={<BlogPost />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

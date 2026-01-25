@@ -12,7 +12,21 @@
       "Bash(gh repo create:*)",
       "Bash(npm run build:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(GIT_TERMINAL_PROMPT=1 git push:*)",
+      "Bash(python3:*)",
+      "Bash(npm run deploy:*)",
+      "Bash(git fetch:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(npx gh-pages:*)",
+      "Bash(git subtree push:*)",
+      "Bash(git checkout:*)",
+      "Bash(git stash:*)",
+      "Bash(git rm:*)",
+      "Bash(git revert:*)"
     ]
   }
 }

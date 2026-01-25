@@ -10,6 +10,10 @@ const MobileNav: React.FC = () => {
   useEffect(() => {
     const fetchNav = async () => {
       const data = await getNavigation();
+      // Add Blog to navigation if not present
+      if (!data.find(item => item.path === '/blog')) {
+        data.push({ id: 'blog', label: 'Blog', path: '/blog', icon: 'pen-tool', order: 4 });
+      }
       setNavItems(data);
     };
     fetchNav();

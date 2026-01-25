@@ -60,6 +60,20 @@ export interface Stat {
   order?: number;
 }
 
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  author: string;
+  publishDate: string;
+  readTime: string;
+  tags: string[];
+  category: string;
+}
+
 // Icon name to component mapping
 export const ICON_MAP: Record<string, LucideIcon> = {
   home: Home,
