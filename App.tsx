@@ -18,7 +18,6 @@ const PAGE_COMPONENTS: Record<string, React.ComponentType> = {
   '/graphic-design': GraphicDesign,
   '/photos': Photos,
   '/contact': Contact,
-  '/blog': Blog,
 };
 
 function App() {
