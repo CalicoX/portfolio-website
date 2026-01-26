@@ -33,8 +33,8 @@ const MobileNav: React.FC = () => {
   const mobileNavItems = navItems.filter(item => !item.path.includes('/contact'));
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md border-t border-white/10 px-2 py-3 md:hidden z-50">
-      <nav className="grid grid-cols-5 gap-1">
+    <div className="fixed bottom-4 left-6 right-6 md:hidden z-50">
+      <nav className="flex items-center px-2 py-2 bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-lg shadow-black/50">
         {mobileNavItems.map((item) => {
           const isActive = getCurrentPath() === item.path.trim();
           const Icon = getIcon(item.icon);
@@ -44,14 +44,14 @@ const MobileNav: React.FC = () => {
             <Link
               key={item.id}
               to={item.path.trim()}
-              className={`flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-full transition-all duration-200 ${
+              className={`flex-1 flex flex-col items-center justify-center gap-1 py-2 rounded-xl transition-all duration-200 ${
                 isActive
                   ? 'bg-white/10 text-white'
                   : 'text-zinc-500'
               }`}
             >
               <Icon size={20} />
-              <span className="text-[10px] font-medium">{displayLabel}</span>
+              <span className="text-[9px] font-medium">{displayLabel}</span>
             </Link>
           );
         })}

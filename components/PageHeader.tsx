@@ -8,14 +8,14 @@ interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({ title, description, children }) => {
   return (
-    <div className="mb-12">
+    <div className="mb-6 md:mb-12">
       <h1
-        className="pixel-font text-4xl md:text-5xl font-bold mb-4 text-white"
+        className="pixel-font text-2xl md:text-5xl font-bold mb-2 md:mb-4 text-white"
         style={{ textShadow: '2px 2px 0px #22c55e' }}
       >
         {title}
       </h1>
-      <p className="text-zinc-400 text-lg max-w-2xl">
+      <p className="text-zinc-400 text-sm md:text-lg max-w-2xl">
         {description}
       </p>
       {children}

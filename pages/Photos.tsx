@@ -13,7 +13,22 @@ const Photos: React.FC = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [cardSize, setCardSize] = useState({ width: 280, height: 360 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [mobileFullscreen, setMobileFullscreen] = useState<Photo | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Minimum swipe distance
+  const minSwipeDistance = 50;
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Fetch photos from Contentful
   useEffect(() => {
@@ -29,6 +44,29 @@ const Photos: React.FC = () => {
     };
     fetchPhotos();
   }, []);
+
+  // Touch handlers for mobile swipe
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setCurrentIndex((prev) => (prev + 1) % photos.length);
+    } else if (isRightSwipe) {
+      setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
+    }
+  };
 
   // Calculate card size based on viewport
   useEffect(() => {
@@ -129,10 +167,10 @@ const Photos: React.FC = () => {
       {/* Matrix Background */}
       <MatrixBackground opacity={0.12} />
       {/* Header */}
-      <div className="flex-shrink-0 mb-4">
+      <div className="flex-shrink-0 mb-2 md:mb-4">
         <PageHeader
           title="Photography"
-          description="Capturing moments from around the world. ← → or scroll to navigate."
+          description={isMobile ? "Swipe to explore." : "Capturing moments from around the world. ← → or scroll to navigate."}
         />
       </div>
 
@@ -176,7 +214,68 @@ const Photos: React.FC = () => {
 
       {loading ? (
         <PhotosPageSkeleton />
+      ) : isMobile ? (
+        <>
+          {/* Mobile Layout - Horizontal scrolling cards */}
+          <div
+            className="flex-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-6 px-6 flex items-center"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '80px' }}
+          >
+            <div className="flex gap-4 items-center" style={{ height: 'calc(100% - 16px)' }}>
+              {photos.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="snap-center flex-shrink-0 relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer active:scale-95 transition-transform"
+                  style={{ height: '100%', aspectRatio: '3/4' }}
+                  onClick={() => setMobileFullscreen(photo)}
+                >
+                  <img
+                    src={photo.imageUrl}
+                    alt={photo.title}
+                    className="w-full h-full object-cover"
+                    draggable={false}
+                  />
+                  {/* Info overlay with glassmorphism */}
+                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-black/40 backdrop-blur-md">
+                    <h3 className="pixel-font text-sm text-white mb-0.5">{photo.title}</h3>
+                    <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+                      <MapPin size={10} />
+                      <span>{photo.location}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile Fullscreen Modal */}
+          {mobileFullscreen && (
+            <div
+              className="fixed inset-0 z-[200] bg-black flex items-center justify-center"
+              onClick={() => setMobileFullscreen(null)}
+            >
+              <img
+                src={mobileFullscreen.imageUrl}
+                alt={mobileFullscreen.title}
+                className="w-full h-full object-contain"
+              />
+              {/* Info overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                <h3 className="pixel-font text-xl text-white mb-1">{mobileFullscreen.title}</h3>
+                <div className="flex items-center gap-2 text-sm text-zinc-300">
+                  <MapPin size={14} />
+                  <span>{mobileFullscreen.location}</span>
+                </div>
+              </div>
+              {/* Tap hint */}
+              <div className="absolute top-6 right-6 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full">
+                <span className="text-xs text-white/70">Tap to close</span>
+              </div>
+            </div>
+          )}
+        </>
       ) : (
+        /* Desktop Layout - Cover Flow */
         <>
           {/* Cover Flow */}
           <div className={`relative flex-1 flex items-center justify-center overflow-hidden transition-all duration-300 ${selectedPhoto ? 'content-blur' : ''}`}>
@@ -272,7 +371,7 @@ const Photos: React.FC = () => {
             </div>
           </div>
 
-          {/* Thumbnail Preview - Dock Style */}
+          {/* Thumbnail Preview - Dock Style (Desktop only) */}
           <div className={`flex-shrink-0 mt-auto mb-4 flex justify-center transition-all duration-300 ${selectedPhoto ? 'content-blur' : ''}`}>
             <div className="bg-zinc-800/60 backdrop-blur-xl border border-zinc-600/50 rounded-2xl px-3 py-2 shadow-lg">
               <div className="flex items-end gap-1.5">
