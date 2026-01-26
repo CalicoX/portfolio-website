@@ -4,6 +4,7 @@ import { Calendar, Clock, Tag, ArrowRight } from 'lucide-react';
 import { getBlogPosts } from '../lib/contentful';
 import type { BlogPost } from '../types';
 import MatrixBackground from '../components/MatrixBackground';
+import PageHeader from '../components/PageHeader';
 
 const Blog: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -32,14 +33,10 @@ const Blog: React.FC = () => {
       <MatrixBackground opacity={0.08} />
 
       {/* Header */}
-      <div className="mb-12">
-        <h1 className="pixel-font text-4xl md:text-5xl font-bold mb-4 text-white" style={{ textShadow: '2px 2px 0px #22c55e' }}>
-          Blog
-        </h1>
-        <p className="text-zinc-400 text-lg max-w-2xl">
-          Thoughts on design, development, and everything in between.
-        </p>
-
+      <PageHeader
+        title="Blog"
+        description="Thoughts on design, development, and everything in between."
+      >
         {/* Category Filter */}
         <div className="flex flex-wrap gap-3 mt-8">
           {categories.map((category) => (
@@ -56,7 +53,7 @@ const Blog: React.FC = () => {
             </button>
           ))}
         </div>
-      </div>
+      </PageHeader>
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -157,10 +154,6 @@ const Blog: React.FC = () => {
         </div>
       )}
 
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
-        .pixel-font { font-family: 'Silkscreen', monospace; }
-      `}</style>
     </div>
   );
 };

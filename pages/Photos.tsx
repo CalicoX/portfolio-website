@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { MapPin, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { PhotosPageSkeleton } from '../components/Skeleton';
 import MatrixBackground from '../components/MatrixBackground';
+import PageHeader from '../components/PageHeader';
 import { getPhotos } from '../lib/contentful';
 import type { Photo } from '../types';
 
@@ -128,12 +129,11 @@ const Photos: React.FC = () => {
       {/* Matrix Background */}
       <MatrixBackground opacity={0.12} />
       {/* Header */}
-      <div className="space-y-1 flex-shrink-0">
-        <h2 className="text-2xl font-bold">Photography</h2>
-        <p className="text-secondary text-sm">
-          Capturing moments from around the world.
-          <span className="text-zinc-500 ml-2">← → or scroll to navigate.</span>
-        </p>
+      <div className="flex-shrink-0 mb-4">
+        <PageHeader
+          title="Photography"
+          description="Capturing moments from around the world. ← → or scroll to navigate."
+        />
       </div>
 
       {/* Cover Flow Styles */}

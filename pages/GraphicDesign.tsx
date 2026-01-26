@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { GRAPHIC_PROJECTS } from '../constants';
 import { getGraphicDesignProjects } from '../lib/contentful';
 import { PhotoGridSkeleton } from '../components/Skeleton';
+import PageHeader from '../components/PageHeader';
 import type { Project } from '../types';
 
 const GraphicDesign: React.FC = () => {
@@ -61,12 +62,10 @@ const GraphicDesign: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
-        <h2 className="text-3xl font-bold">Graphic Design</h2>
-        <p className="text-secondary max-w-2xl">
-          Visual storytelling through branding, illustration, and print media.
-        </p>
-      </div>
+      <PageHeader
+        title="Graphic Design"
+        description="Visual storytelling through branding, illustration, and print media."
+      />
 
       {loading ? (
         <PhotoGridSkeleton />

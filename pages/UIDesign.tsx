@@ -4,6 +4,7 @@ import { UI_PROJECTS } from '../constants';
 import { ArrowUpRight } from 'lucide-react';
 import { getProjects } from '../lib/contentful';
 import { ProjectGridSkeleton } from '../components/Skeleton';
+import PageHeader from '../components/PageHeader';
 import type { Project } from '../types';
 
 const UIDesign: React.FC = () => {
@@ -31,12 +32,10 @@ const UIDesign: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
-        <h2 className="text-3xl font-bold">UI Design</h2>
-        <p className="text-secondary max-w-2xl">
-          A collection of digital interfaces focusing on usability, accessibility, and visual aesthetics.
-        </p>
-      </div>
+      <PageHeader
+        title="UI Design"
+        description="A collection of digital interfaces focusing on usability, accessibility, and visual aesthetics."
+      />
 
       {loading ? (
         <ProjectGridSkeleton />
