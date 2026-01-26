@@ -8,6 +8,18 @@ const MobileNav: React.FC = () => {
   const [navItems, setNavItems] = useState<NavItem[]>([]);
 
   useEffect(() => {
+    // Try to get preloaded nav items from sessionStorage first
+    const preloadedNav = sessionStorage.getItem('navItems');
+    if (preloadedNav) {
+      try {
+        setNavItems(JSON.parse(preloadedNav));
+        return;
+      } catch (e) {
+        console.error('Failed to parse preloaded nav items:', e);
+      }
+    }
+
+    // Fallback to fetching
     const fetchNav = async () => {
       const data = await getNavigation();
       setNavItems(data);

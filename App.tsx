@@ -28,6 +28,8 @@ function App() {
     const fetchNav = async () => {
       const data = await getNavigation();
       setNavItems(data);
+      // Keep nav items in sessionStorage for MobileNav to access
+      sessionStorage.setItem('navItems', JSON.stringify(data));
       setLoading(false);
     };
     fetchNav();
@@ -44,7 +46,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={<Layout navItems={navItems} />}>
           <Route index element={<Home />} />
 
           {/* UI Design routes */}
