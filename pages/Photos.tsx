@@ -163,11 +163,11 @@ const Photos: React.FC = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-96px)] md:h-[calc(100vh-48px)] flex flex-col overflow-hidden -mb-24 md:-mb-12 relative">
+    <div className="h-[calc(100vh-96px)] md:h-[calc(100vh-48px)] flex flex-col -mb-24 md:-mb-12 relative px-4 md:px-0">
       {/* Matrix Background */}
       <MatrixBackground opacity={0.12} />
       {/* Header */}
-      <div className="flex-shrink-0 mb-2 md:mb-4">
+      <div className="flex-shrink-0 mb-3 md:mb-4">
         <PageHeader
           title="Photography"
           description={isMobile ? "Swipe to explore." : "Capturing moments from around the world. ← → or scroll to navigate."}
@@ -218,15 +218,19 @@ const Photos: React.FC = () => {
         <>
           {/* Mobile Layout - Horizontal scrolling cards */}
           <div
-            className="flex-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-6 px-6 flex items-center"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '80px' }}
+            className="flex-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide flex items-center"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '100px' }}
           >
-            <div className="flex gap-4 items-center" style={{ height: 'calc(100% - 16px)' }}>
+            <div className="flex gap-4 items-center px-1" style={{ height: 'calc(100% - 16px)' }}>
               {photos.map((photo) => (
                 <div
                   key={photo.id}
                   className="snap-center flex-shrink-0 relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer active:scale-95 transition-transform"
-                  style={{ height: '100%', aspectRatio: '3/4' }}
+                  style={{
+                    height: '100%',
+                    width: 'min(calc(100vw - 64px), 320px)',
+                    maxWidth: 'calc(100vw - 64px)'
+                  }}
                   onClick={() => setMobileFullscreen(photo)}
                 >
                   <img
@@ -236,10 +240,10 @@ const Photos: React.FC = () => {
                     draggable={false}
                   />
                   {/* Info overlay with glassmorphism */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-black/40 backdrop-blur-md">
-                    <h3 className="pixel-font text-sm text-white mb-0.5">{photo.title}</h3>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
+                    <h3 className="text-sm md:text-base font-semibold text-white mb-1">{photo.title}</h3>
                     <div className="flex items-center gap-1.5 text-xs text-zinc-300">
-                      <MapPin size={10} />
+                      <MapPin size={11} />
                       <span>{photo.location}</span>
                     </div>
                   </div>
@@ -261,7 +265,7 @@ const Photos: React.FC = () => {
               />
               {/* Info overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent animate-in slide-in-from-bottom-4 duration-300 delay-100">
-                <h3 className="pixel-font text-xl text-white mb-1">{mobileFullscreen.title}</h3>
+                <h3 className="text-xl font-semibold text-white mb-1">{mobileFullscreen.title}</h3>
                 <div className="flex items-center gap-2 text-sm text-zinc-300">
                   <MapPin size={14} />
                   <span>{mobileFullscreen.location}</span>
@@ -361,7 +365,7 @@ const Photos: React.FC = () => {
 
             {/* Current Photo Info */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center z-50">
-              <h3 className="pixel-font text-lg text-white mb-1">{photos[currentIndex]?.title}</h3>
+              <h3 className="text-lg font-semibold text-white mb-1">{photos[currentIndex]?.title}</h3>
               <div className="flex items-center justify-center gap-3 text-sm text-zinc-400">
                 <div className="flex items-center gap-1">
                   <MapPin size={14} />
@@ -432,7 +436,7 @@ const Photos: React.FC = () => {
 
               {/* Photo Info */}
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
-                <h3 className="pixel-font text-2xl text-white mb-2">{selectedPhoto.title}</h3>
+                <h3 className="text-2xl font-semibold text-white mb-2">{selectedPhoto.title}</h3>
                 <div className="flex items-center gap-2 text-zinc-300">
                   <MapPin size={16} />
                   <span>{selectedPhoto.location}</span>

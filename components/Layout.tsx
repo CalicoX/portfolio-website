@@ -76,7 +76,13 @@ const Layout: React.FC = () => {
   return (
     <div className="min-h-screen bg-background text-primary flex flex-col md:flex-row">
       {isLoading ? (
-        <LoadingScreen onComplete={handleLoadingComplete} />
+        <>
+          <LoadingScreen onComplete={handleLoadingComplete} />
+          {/* Preload mobile nav in background */}
+          <div className="md:hidden" aria-hidden="true">
+            <MobileNav />
+          </div>
+        </>
       ) : (
         <>
           {isReady && (

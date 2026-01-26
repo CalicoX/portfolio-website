@@ -250,13 +250,13 @@ const TerminalExperience: React.FC<{ experience: typeof EXPERIENCES[number]; ind
   }, [experience, index]);
 
   return (
-    <div className="font-mono mb-4 p-4 bg-zinc-900/50 border border-zinc-800 rounded backdrop-blur-md">
-      <div className="flex gap-2 items-center min-h-[28px]">
-        <span className="text-accent text-base">$</span>
-        <span className="pixel-font text-base" style={{ color }}>{displayText}</span>
-        {showCursor && !isDeleting && <span className="animate-pulse text-base" style={{ color }}>_</span>}
+    <div className="font-mono mb-4 p-3 md:p-4 bg-zinc-900/50 border border-zinc-800 rounded backdrop-blur-md">
+      <div className="flex gap-2 items-center min-h-[24px]">
+        <span className="text-accent text-xs md:text-base">$</span>
+        <span className="pixel-font text-xs md:text-base" style={{ color }}>{displayText}</span>
+        {showCursor && !isDeleting && <span className="animate-pulse text-xs md:text-base" style={{ color }}>_</span>}
       </div>
-      <div className="text-zinc-500 text-xs mt-3 pl-4">{experience.description}</div>
+      <div className="text-zinc-500 text-[10px] md:text-xs mt-2 md:mt-3 pl-3 md:pl-4">{experience.description}</div>
     </div>
   );
 };
@@ -308,27 +308,27 @@ const Home: React.FC = () => {
   // Skeleton loading component
   if (!ready) {
     return (
-      <div className="flex flex-col gap-16 md:gap-24 animate-pulse">
+      <div className="flex flex-col gap-20 md:gap-24 animate-pulse">
         {/* Hero Skeleton */}
-        <section className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20">
-          <div className="flex-1 space-y-6 w-full">
-            <div className="h-6 w-32 bg-zinc-800 rounded mx-auto lg:mx-0" />
-            <div className="space-y-3">
-              <div className="h-12 md:h-16 bg-zinc-800 rounded w-3/4 mx-auto lg:mx-0" />
-              <div className="h-12 md:h-16 bg-zinc-800 rounded w-1/2 mx-auto lg:mx-0" />
+        <section className="flex flex-col-reverse lg:flex-row items-center gap-10 lg:gap-20">
+          <div className="flex-1 space-y-5 w-full">
+            <div className="h-5 w-28 bg-zinc-800 rounded mx-auto lg:mx-0" />
+            <div className="space-y-2">
+              <div className="h-8 md:h-10 lg:h-14 bg-zinc-800 rounded w-3/4 mx-auto lg:mx-0" />
+              <div className="h-8 md:h-10 lg:h-14 bg-zinc-800 rounded w-1/2 mx-auto lg:mx-0" />
             </div>
-            <div className="space-y-2 max-w-xl mx-auto lg:mx-0">
-              <div className="h-4 bg-zinc-800 rounded w-full" />
-              <div className="h-4 bg-zinc-800 rounded w-5/6" />
+            <div className="space-y-1.5 max-w-xl mx-auto lg:mx-0">
+              <div className="h-3 md:h-4 bg-zinc-800 rounded w-full" />
+              <div className="h-3 md:h-4 bg-zinc-800 rounded w-5/6" />
             </div>
-            <div className="h-12 w-36 bg-zinc-800 rounded mx-auto lg:mx-0" />
+            <div className="h-10 w-32 bg-zinc-800 rounded mx-auto lg:mx-0" />
           </div>
-          <div className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 bg-zinc-800 rounded-full flex-shrink-0" />
+          <div className="w-48 h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-zinc-800 rounded-full flex-shrink-0" />
         </section>
 
         {/* Skills Skeleton */}
         <section>
-          <div className="h-8 w-48 bg-zinc-800 rounded mb-8" />
+          <div className="h-7 w-40 bg-zinc-800 rounded mb-8" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="bg-zinc-900/50 border border-zinc-800 p-6 flex flex-col items-center gap-5">
@@ -341,8 +341,8 @@ const Home: React.FC = () => {
 
         {/* Experience Skeleton */}
         <section>
-          <div className="h-8 w-72 bg-zinc-800 rounded mb-8" />
-          <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-lg space-y-4">
+          <div className="h-6 w-56 bg-zinc-800 rounded mb-8" />
+          <div className="bg-zinc-900/50 border border-zinc-800 p-4 md:p-6 rounded-lg space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="p-4 bg-zinc-900/50 border border-zinc-800 rounded">
                 <div className="h-5 w-3/4 bg-zinc-800 rounded mb-2" />
@@ -354,7 +354,7 @@ const Home: React.FC = () => {
 
         {/* Featured Work Skeleton */}
         <section className="space-y-6">
-          <div className="h-8 w-48 bg-zinc-800 rounded" />
+          <div className="h-7 w-40 bg-zinc-800 rounded" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className={`${i === 1 ? 'md:col-span-3' : i === 2 ? 'md:col-span-1' : 'md:col-span-2'} h-[300px] bg-zinc-800 rounded`} />
@@ -368,13 +368,13 @@ const Home: React.FC = () => {
   const displayProfile = profile!;
 
   return (
-    <div className="flex flex-col gap-16 md:gap-24">
+    <div className="flex flex-col gap-20 md:gap-24">
       {/* Hero Section */}
-      <section className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20">
-        <div className="flex-1 space-y-6 text-center lg:text-left">
+      <section className="flex flex-col-reverse lg:flex-row items-center gap-10 lg:gap-20">
+        <div className="flex-1 space-y-5 text-center lg:text-left">
           <AvailableBadge />
 
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight tracking-tight">
+          <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold leading-tight tracking-tight">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-zinc-400">
               {displayProfile.heroTitle}
             </span>
@@ -384,19 +384,19 @@ const Home: React.FC = () => {
             </span>
           </h1>
 
-          <p className="text-sm text-secondary max-w-xl mx-auto lg:mx-0 leading-relaxed">
+          <p className="text-xs md:text-sm text-secondary max-w-xl mx-auto lg:mx-0 leading-relaxed">
             <TypewriterText text={displayProfile.name} delay={500} />
           </p>
 
           <div className="flex justify-center lg:justify-start pt-4">
-            <Link to="/contact" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent text-black font-semibold hover:bg-accent/90 transition-colors">
-              Hire Me <ArrowRight size={18} />
+            <Link to="/contact" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 md:px-6 md:py-3 bg-accent text-black font-semibold hover:bg-accent/90 transition-colors text-sm md:text-base">
+              Hire Me <ArrowRight size={16} />
             </Link>
           </div>
         </div>
 
         {/* Hero Image */}
-        <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 flex-shrink-0">
+        <div className="relative w-48 h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 flex-shrink-0">
           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-accent/20 to-purple-500/20 blur-3xl animate-pulse-slow"></div>
           <img
             src={displayProfile.profileImageUrl}
@@ -408,7 +408,7 @@ const Home: React.FC = () => {
 
       {/* Skills */}
       <section>
-        <h2 className="text-2xl md:text-3xl font-bold mb-8">Skills & Tools</h2>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-8">Skills & Tools</h2>
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
           .skill-card:hover .skill-icon { background-color: var(--hover-color) !important; }
@@ -446,7 +446,7 @@ const Home: React.FC = () => {
 
       {/* Experience Section - Terminal Style */}
       <section>
-        <h2 className="text-xl md:text-3xl lg:text-4xl font-black mb-8 flex flex-wrap items-center gap-2 font-mono tracking-wider">
+        <h2 className="text-base md:text-xl lg:text-3xl font-black mb-8 flex flex-wrap items-center gap-2 font-mono tracking-wider">
           <span className="text-accent">root@portfolio</span>
           <span className="text-zinc-600">:</span>
           <span className="text-zinc-600">~</span>
@@ -462,7 +462,7 @@ const Home: React.FC = () => {
 
       {/* Featured Work - Retro Game Boy Style */}
       <section className="space-y-6">
-        <h2 className="text-2xl md:text-3xl font-bold">Featured Work</h2>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">Featured Work</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {BENTO_ITEMS.map((item) => {
