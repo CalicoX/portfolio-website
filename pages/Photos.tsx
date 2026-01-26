@@ -251,26 +251,29 @@ const Photos: React.FC = () => {
           {/* Mobile Fullscreen Modal */}
           {mobileFullscreen && (
             <div
-              className="fixed inset-0 z-[200] bg-black flex items-center justify-center"
+              className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl animate-in fade-in duration-200 flex items-center justify-center p-4"
               onClick={() => setMobileFullscreen(null)}
             >
               <img
                 src={mobileFullscreen.imageUrl}
                 alt={mobileFullscreen.title}
-                className="w-full h-full object-contain"
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300"
               />
               {/* Info overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent animate-in slide-in-from-bottom-4 duration-300 delay-100">
                 <h3 className="pixel-font text-xl text-white mb-1">{mobileFullscreen.title}</h3>
                 <div className="flex items-center gap-2 text-sm text-zinc-300">
                   <MapPin size={14} />
                   <span>{mobileFullscreen.location}</span>
                 </div>
               </div>
-              {/* Tap hint */}
-              <div className="absolute top-6 right-6 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full">
-                <span className="text-xs text-white/70">Tap to close</span>
-              </div>
+              {/* Close button */}
+              <button
+                onClick={(e) => e.stopPropagation()}
+                className="absolute top-6 right-6 p-2 bg-zinc-800/60 backdrop-blur-md border border-white/10 rounded-full animate-in fade-in slide-in-from-top-2 duration-300 delay-150"
+              >
+                <X size={20} className="text-white" />
+              </button>
             </div>
           )}
         </>
