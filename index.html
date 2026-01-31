@@ -1,102 +1,213 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['"Geist Mono"', 'monospace'],
-              mono: ['"Geist Mono"', 'monospace'],
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Geist Mono"', 'monospace'],
+            mono: ['"Geist Mono"', 'monospace'],
+            inter: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            background: '#09090b',
+            surface: '#18181b',
+
+            // Homepage Compatibility
+            primary: {
+              DEFAULT: '#fafafa',
+              foreground: 'hsl(var(--primary-foreground))',
             },
-            colors: {
-              background: '#09090b',
-              surface: '#18181b',
-              primary: '#fafafa',
-              secondary: '#a1a1aa',
-              accent: '#22c55e',
+
+            secondary: {
+              DEFAULT: '#a1a1aa',
+              foreground: 'hsl(var(--secondary-foreground))',
             },
-            animation: {
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'fade-in': 'fadeIn 0.5s ease-out forwards',
-              'blink': 'blink 1s step-end infinite',
-              'shake-glow': 'shakeGlow 0.15s ease-in-out infinite',
-              'shimmer': 'shimmer 1.5s ease-in-out infinite',
+
+            accent: {
+              DEFAULT: '#22c55e',
+              foreground: 'hsl(var(--accent-foreground))',
             },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0', transform: 'translateY(10px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              },
-              blink: {
-                '0%, 50%': { opacity: '1' },
-                '51%, 100%': { opacity: '0' },
-              },
-              shakeGlow: {
-                '0%, 100%': { transform: 'translateX(0)' },
-                '25%': { transform: 'translateX(-1px)' },
-                '75%': { transform: 'translateX(1px)' },
-              },
-              shimmer: {
-                '0%': { transform: 'translateX(-100%)' },
-                '100%': { transform: 'translateX(100%)' },
-              }
-            }
+
+            border: "hsl(var(--border))",
+            input: "hsl(var(--input))",
+            ring: "hsl(var(--ring))",
+            foreground: "hsl(var(--foreground))",
+
+            muted: {
+              DEFAULT: "hsl(var(--muted))",
+              foreground: "hsl(var(--muted-foreground))",
+            },
+            popover: {
+              DEFAULT: "hsl(var(--popover))",
+              foreground: "hsl(var(--popover-foreground))",
+            },
+            card: {
+              DEFAULT: "hsl(var(--card))",
+              foreground: "hsl(var(--card-foreground))",
+            },
+            destructive: {
+              DEFAULT: "hsl(var(--destructive))",
+              foreground: "hsl(var(--destructive-foreground))",
+            },
+          },
+          borderRadius: {
+            lg: "var(--radius)",
+            md: "calc(var(--radius) - 2px)",
+            sm: "calc(var(--radius) - 4px)",
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'fade-in': 'fadeIn 0.5s ease-out forwards',
+            'blink': 'blink 1s step-end infinite',
+            'shake-glow': 'shakeGlow 0.15s ease-in-out infinite',
+            'shimmer': 'shimmer 1.5s ease-in-out infinite',
+            "accordion-down": "accordion-down 0.2s ease-out",
+            "accordion-up": "accordion-up 0.2s ease-out",
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            blink: {
+              '0%, 50%': { opacity: '1' },
+              '51%, 100%': { opacity: '0' },
+            },
+            shakeGlow: {
+              '0%, 100%': { transform: 'translateX(0)' },
+              '25%': { transform: 'translateX(-1px)' },
+              '75%': { transform: 'translateX(1px)' },
+            },
+            shimmer: {
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(100%)' },
+            },
+            "accordion-down": {
+              from: { height: "0" },
+              to: { height: "var(--radix-accordion-content-height)" },
+            },
+            "accordion-up": {
+              from: { height: "var(--radix-accordion-content-height)" },
+              to: { height: "0" },
+            },
           }
         }
       }
-    </script>
-    <style>
-      * {
-        font-family: 'Geist Mono', monospace;
-        image-rendering: pixelated;
-      }
-      body {
-        background-color: #09090b;
-        color: #fafafa;
-      }
-      /* Prevent flash of unstyled content */
-      #root {
-        display: block;
-      }
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #09090b;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #27272a;
-        border-radius: 0;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #22c55e;
-      }
-    </style>
+    }
+  </script>
+  <style>
+    :root {
+      /* Default Variables */
+      --background: 240 10% 3.9%;
+      --foreground: 0 0% 98%;
 
+      --card: 240 5.9% 10%;
+      --card-foreground: 0 0% 98%;
+
+      --popover: 240 10% 3.9%;
+      --popover-foreground: 0 0% 98%;
+
+      --primary: 0 0% 98%;
+      --primary-foreground: 240 5.9% 10%;
+
+      --secondary: 240 3.7% 15.9%;
+      --secondary-foreground: 0 0% 98%;
+
+      --muted: 240 3.7% 15.9%;
+      --muted-foreground: 240 5% 64.9%;
+
+      --accent: 142 70% 45%;
+      --accent-foreground: 0 0% 98%;
+
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 0 0% 98%;
+
+      --border: 240 3.7% 15.9%;
+      --input: 240 3.7% 15.9%;
+      --ring: 142 70% 50%;
+
+      --radius: 0.5rem;
+    }
+
+    /* Admin Panel Specific Overrides via class */
+    .font-inter {
+      /* Override Primary to Green for Admin Area */
+      --primary: 142 70% 45%;
+      --primary-foreground: 0 0% 98%;
+      --ring: 142 70% 45%;
+
+      /* Subtle Borders for "Premium" look - Darker than default */
+      --border: 240 3.7% 12%;
+      --input: 240 3.7% 12%;
+      --card: 240 10% 5%;
+    }
+
+    /* FORCE FONT OVERRIDE for Admin Panel */
+    .font-inter,
+    .font-inter * {
+      font-family: 'Inter', sans-serif !important;
+    }
+
+    /* Global Reset for Site (Geist Mono) */
+    * {
+      font-family: 'Geist Mono', monospace;
+      image-rendering: pixelated;
+      border-color: hsl(var(--border));
+    }
+
+    body {
+      background-color: #09090b;
+      color: #fafafa;
+    }
+
+    #root {
+      display: block;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #09090b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 0;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #22c55e;
+    }
+  </style>
   <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0"
-  }
-}
-</script>
-  <script type="module" crossorigin src="/portfolio-website/assets/index-VkWwDtEn.js"></script>
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.2.0",
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client"
+        }
+      }
+    </script>
+  <script type="module" crossorigin src="/portfolio-website/assets/index-DVz5Z7ps.js"></script>
 </head>
-  <body>
-    <div id="root"></div>
-  </body>
+
+<body>
+  <div id="root"></div>
+
+</body>
+
 </html>
