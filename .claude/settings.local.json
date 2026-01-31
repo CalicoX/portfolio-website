@@ -27,7 +27,10 @@
       "Bash(git stash:*)",
       "Bash(git rm:*)",
       "Bash(git revert:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(npm run dev:all:*)",
+      "Bash(npm run server:dev:*)",
+      "Bash(npm run server)"
     ]
   }
 }

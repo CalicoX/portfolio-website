@@ -97,17 +97,6 @@ const Contact: React.FC = () => {
     company: '',
   });
 
-  // Disable body scroll when component mounts
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-    };
-  }, []);
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -161,7 +150,7 @@ Message sent from portfolio contact form
   const profileImageUrl = profile?.profileImageUrl || 'https://picsum.photos/400/400?random=100';
 
   return (
-    <div className="flex items-center justify-center h-screen w-screen bg-background relative overflow-hidden">
+    <div className="min-h-screen w-full bg-background relative flex flex-col">
       {/* Pixel Grid Background */}
       <div
         className="absolute inset-0 opacity-5"
@@ -182,7 +171,7 @@ Message sent from portfolio contact form
         }}
       />
 
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 px-4 lg:px-8 max-w-6xl mx-auto w-full relative z-10">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 px-4 lg:px-8 max-w-6xl mx-auto w-full relative z-10 py-24 my-auto">
         {/* Left Side - Profile */}
         <div className="flex flex-col items-center lg:items-start text-center lg:text-left w-64 lg:w-80 flex-shrink-0">
           {/* Profile Image with Pixel Border */}

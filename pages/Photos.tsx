@@ -163,11 +163,13 @@ const Photos: React.FC = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-96px)] md:h-[calc(100vh-48px)] flex flex-col -mb-24 md:-mb-12 relative px-4 md:px-0">
+    <div className="h-[calc(100vh-96px)] md:h-[calc(100vh-48px)] flex flex-col -mb-24 md:-mb-12 relative md:px-0">
       {/* Matrix Background */}
-      <MatrixBackground opacity={0.12} />
+      <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
+        <MatrixBackground opacity={0.12} />
+      </div>
       {/* Header */}
-      <div className="flex-shrink-0 mb-3 md:mb-4">
+      <div className="flex-shrink-0 mb-3 md:mb-4 relative z-10">
         <PageHeader
           title="Photography"
           description={isMobile ? "Swipe to explore." : "Capturing moments from around the world. ← → or scroll to navigate."}
@@ -218,18 +220,18 @@ const Photos: React.FC = () => {
         <>
           {/* Mobile Layout - Horizontal scrolling cards */}
           <div
-            className="flex-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide flex items-center"
+            className="flex-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide flex items-center relative z-10"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: '100px' }}
           >
-            <div className="flex gap-4 items-center px-1" style={{ height: 'calc(100% - 16px)' }}>
+            <div className="flex gap-4 items-center px-6" style={{ height: 'calc(100% - 16px)' }}>
               {photos.map((photo) => (
                 <div
                   key={photo.id}
                   className="snap-center flex-shrink-0 relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer active:scale-95 transition-transform"
                   style={{
                     height: '100%',
-                    width: 'min(calc(100vw - 64px), 320px)',
-                    maxWidth: 'calc(100vw - 64px)'
+                    width: 'min(calc(100vw - 48px), 400px)',
+                    maxWidth: 'calc(100vw - 48px)'
                   }}
                   onClick={() => setMobileFullscreen(photo)}
                 >
@@ -386,11 +388,10 @@ const Photos: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
-                    className={`relative rounded-lg overflow-hidden transition-all duration-200 ease-out hover:scale-125 hover:-translate-y-2 ${
-                      index === currentIndex
-                        ? 'w-11 h-11 ring-2 ring-accent/80 scale-110 -translate-y-1'
-                        : 'w-10 h-10 opacity-70 hover:opacity-100 grayscale hover:grayscale-0'
-                    }`}
+                    className={`relative rounded-lg overflow-hidden transition-all duration-200 ease-out hover:scale-125 hover:-translate-y-2 ${index === currentIndex
+                      ? 'w-11 h-11 ring-2 ring-accent/80 scale-110 -translate-y-1'
+                      : 'w-10 h-10 opacity-70 hover:opacity-100 grayscale hover:grayscale-0'
+                      }`}
                   >
                     <img
                       src={photo.imageUrl}

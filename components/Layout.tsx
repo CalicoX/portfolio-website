@@ -85,11 +85,11 @@ const Layout: React.FC = () => {
               <MobileHeader />
 
               {/* Main Content Area */}
-              <main className={`flex-1 ${pathname === '/contact' ? '' : 'md:ml-64'} w-full relative min-h-screen isolate ${pathname === '/contact' ? '!h-screen !p-0 !pt-0 !pb-0' : ''}`}>
+              <main className={`flex-1 md:ml-64 w-full relative min-h-screen ${pathname === '/contact' ? '!p-0 !pt-0 !pb-0' : ''}`}>
                 {/* Render background only on Home page */}
                 {pathname === '/' && <DotMatrixBackground />}
 
-                <div className={`w-full h-full p-6 pt-24 md:p-12 md:pt-12 pb-24 md:pb-12 max-w-7xl mx-auto animate-fade-in relative z-10 ${pathname === '/contact' ? '!p-0 !pt-0 !pb-0 !h-screen' : ''}`}>
+                <div className={`w-full h-full p-6 pt-24 md:p-12 md:pt-12 pb-24 md:pb-12 animate-fade-in relative z-10 ${pathname === '/contact' ? '!p-0 !pt-0 !pb-0' : ''}`}>
                   <Outlet />
                 </div>
               </main>
