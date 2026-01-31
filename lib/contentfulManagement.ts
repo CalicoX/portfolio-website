@@ -1,10 +1,29 @@
 import { createClient } from 'contentful-management';
 
+const TOKEN_STORAGE_KEY = 'contentful_cma_token';
+
+// Helper to manage token
+export const setManagementToken = (token: string) => {
+    localStorage.setItem(TOKEN_STORAGE_KEY, token);
+};
+
+export const getManagementToken = () => {
+    return localStorage.getItem(TOKEN_STORAGE_KEY);
+};
+
+export const hasManagementToken = () => {
+    return !!localStorage.getItem(TOKEN_STORAGE_KEY);
+};
+
+export const clearManagementToken = () => {
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+};
+
 // Initialize the Contentful Management API client
 const getManagementClient = () => {
-    const token = import.meta.env.VITE_CONTENTFUL_MANAGEMENT_TOKEN;
+    const token = getManagementToken();
     if (!token) {
-        throw new Error('Contentful Management Token is not configured');
+        throw new Error('CONTENTFUL_TOKEN_MISSING');
     }
     return createClient({
         accessToken: token,

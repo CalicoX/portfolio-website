@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Plus, Trash2, Edit2, Save, X, Upload, Loader2, RefreshCw, Image as ImageIcon, User, Lock, AlertTriangle } from 'lucide-react';
+import { LogOut, Plus, Trash2, Edit2, Save, X, Upload, Loader2, RefreshCw, Image as ImageIcon, User, Lock, AlertTriangle, Key } from 'lucide-react';
 import {
     getPhotosAdmin,
     createPhoto,
@@ -9,6 +9,8 @@ import {
     uploadAsset,
     getIndexAdmin,
     updateIndex,
+    setManagementToken,
+    hasManagementToken,
 } from '../lib/contentfulManagement';
 import {
     validateAuthToken,
@@ -70,6 +72,10 @@ const AdminPanel: React.FC = () => {
     const [qrCodeUrl, setQrCodeUrl] = useState('');
     const [newSecret, setNewSecret] = useState('');
 
+    // Token Management State
+    const [showTokenModal, setShowTokenModal] = useState(false);
+    const [tokenInput, setTokenInput] = useState('');
+
     // Check authentication with secure token validation
     useEffect(() => {
         const checkAuth = async () => {
@@ -109,6 +115,13 @@ const AdminPanel: React.FC = () => {
             setIsAdding(false);
             resetForm();
 
+            // Check for management token FIRST
+            if (!hasManagementToken()) {
+                setShowTokenModal(true);
+                setLoading(false);
+                return;
+            }
+
             if (activeTab === 'index') {
                 const data = await getIndexAdmin();
                 setIndexData(data);
@@ -140,9 +153,25 @@ const AdminPanel: React.FC = () => {
                 setIndexData(null);
             }
         } catch (err: any) {
-            setError(err.message || 'Failed to fetch entries');
+            console.error(err);
+            if (err.message === 'CONTENTFUL_TOKEN_MISSING' || (err.message && err.message.includes('token'))) {
+                setShowTokenModal(true);
+            } else {
+                setError(err.message || 'Failed to fetch entries');
+            }
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleTokenSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (tokenInput.trim()) {
+            setManagementToken(tokenInput.trim());
+            setShowTokenModal(false);
+            setLoading(true);
+            // Retry fetch
+            fetchEntries();
         }
     };
 
@@ -168,7 +197,11 @@ const AdminPanel: React.FC = () => {
             const assetId = await uploadAsset(file);
             setFormData(prev => ({ ...prev, [fieldName]: assetId }));
         } catch (err: any) {
-            setError('Failed to upload image: ' + err.message);
+            if (err.message === 'CONTENTFUL_TOKEN_MISSING') {
+                setShowTokenModal(true);
+            } else {
+                setError('Failed to upload image: ' + err.message);
+            }
         } finally {
             setUploadingImage(false);
         }
@@ -195,7 +228,11 @@ const AdminPanel: React.FC = () => {
             setIsAdding(false);
             resetForm();
         } catch (err: any) {
-            setError('Failed to create: ' + err.message);
+            if (err.message === 'CONTENTFUL_TOKEN_MISSING') {
+                setShowTokenModal(true);
+            } else {
+                setError('Failed to create: ' + err.message);
+            }
         } finally {
             setSaving(false);
         }
@@ -230,7 +267,11 @@ const AdminPanel: React.FC = () => {
                 resetForm();
             }
         } catch (err: any) {
-            setError('Failed to update: ' + err.message);
+            if (err.message === 'CONTENTFUL_TOKEN_MISSING') {
+                setShowTokenModal(true);
+            } else {
+                setError('Failed to update: ' + err.message);
+            }
         } finally {
             setSaving(false);
         }
@@ -246,7 +287,11 @@ const AdminPanel: React.FC = () => {
             }
             await fetchEntries();
         } catch (err: any) {
-            setError('Failed to delete: ' + err.message);
+            if (err.message === 'CONTENTFUL_TOKEN_MISSING') {
+                setShowTokenModal(true);
+            } else {
+                setError('Failed to delete: ' + err.message);
+            }
         } finally {
             setSaving(false);
         }
@@ -720,6 +765,51 @@ const AdminPanel: React.FC = () => {
                     )}
                 </Tabs>
             </main>
+
+            {/* Token Input Modal */}
+            {showTokenModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md">
+                    <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6 w-full max-w-sm mx-4 animate-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-accent/20 rounded-lg">
+                                    <Key size={20} className="text-accent" />
+                                </div>
+                                <h3 className="text-lg font-semibold">
+                                    Setup API Access
+                                </h3>
+                            </div>
+                        </div>
+
+                        <p className="text-sm text-muted-foreground mb-4">
+                            This static site requires your Contentful Management Token (CMA) to manage content. It will be stored securely in your browser.
+                        </p>
+
+                        <form onSubmit={handleTokenSubmit}>
+                            <div className="space-y-3 mb-4">
+                                <Label>Management Token (CMA)</Label>
+                                <Input
+                                    type="password"
+                                    value={tokenInput}
+                                    onChange={(e) => setTokenInput(e.target.value)}
+                                    placeholder="CFPAT-..."
+                                    className="bg-zinc-800 border-zinc-700"
+                                    autoFocus
+                                />
+                                <p className="text-xs text-zinc-500">
+                                    <a href="https://app.contentful.com/deeplink?link=api-keys" target="_blank" rel="noopener noreferrer" className="underline hover:text-accent">
+                                        Get your token here
+                                    </a>
+                                </p>
+                            </div>
+
+                            <Button type="submit" className="w-full">
+                                Save & Connect
+                            </Button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
