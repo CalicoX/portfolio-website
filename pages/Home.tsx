@@ -9,19 +9,18 @@ import type { SiteProfile } from '../types';
 // Get base URL for assets
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
-// Skills data with white icons
+// Skills data
 const SKILLS = [
-  { id: '1', name: 'Figma', icon: `${BASE_URL}icons/figma.svg`, color: 'from-pink-500 to-purple-500', initialColor: '#fafafa', hoverColor: '#ffffff' },
-  { id: '2', name: 'Adobe', icon: `${BASE_URL}icons/adobe.svg`, color: 'from-red-500 to-orange-500', initialColor: '#fafafa', hoverColor: '#ffffff' },
-  { id: '3', name: 'Video Editing', icon: `${BASE_URL}icons/video.svg`, color: 'from-blue-500 to-cyan-500', initialColor: '#fafafa', hoverColor: '#ffffff' },
-  { id: '4', name: 'Vibecoding', icon: `${BASE_URL}icons/vibecoding.svg`, color: 'from-green-500 to-emerald-500', initialColor: '#fafafa', hoverColor: '#ffffff' },
+  { id: '1', name: 'Figma', icon: `${BASE_URL}icons/figma.svg` },
+  { id: '2', name: 'Adobe', icon: `${BASE_URL}icons/adobe.svg` },
+  { id: '3', name: 'Video Editing', icon: `${BASE_URL}icons/video.svg` },
+  { id: '4', name: 'Vibecoding', icon: `${BASE_URL}icons/vibecoding.svg` },
 ];
 
 // Spotlight Card Component with mouse tracking
 const SpotlightCard: React.FC<{
-  skill: typeof SKILLS[number];
   children: React.ReactNode;
-}> = ({ skill, children }) => {
+}> = ({ children }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -43,7 +42,6 @@ const SpotlightCard: React.FC<{
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ '--hover-color': skill.hoverColor } as React.CSSProperties}
     >
       {/* Main Spotlight Effect - Large and bright */}
       <div
@@ -167,7 +165,7 @@ const BENTO_ITEMS = [
     title: 'UI Design',
     description: 'Web & Mobile interfaces',
     link: '/ui-design',
-    image: 'https://via.placeholder.com/1200x400/18181b/22c55e?text=UI+Design', // 替换成你的图片URL
+    image: 'https://placehold.co/1200x400/18181b/22c55e/png?text=UI+Design', // 替换成你的图片URL
     size: 'col-span-3 row-span-1',
   },
   {
@@ -183,7 +181,7 @@ const BENTO_ITEMS = [
     title: 'Graphic Design',
     description: 'Branding & Illustration',
     link: '/graphic-design',
-    image: 'https://via.placeholder.com/800x400/18181b/22c55e?text=Graphic+Design', // 替换成你的图片URL
+    image: 'https://placehold.co/800x400/18181b/22c55e/png?text=Graphic+Design', // 替换成你的图片URL
     size: 'col-span-2 row-span-1',
   },
 ];
@@ -375,13 +373,36 @@ const Home: React.FC = () => {
           <AvailableBadge />
 
           <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold leading-tight tracking-tight">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-zinc-400">
-              {displayProfile.heroTitle}
-            </span>
-            {' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white/70 to-zinc-500">
-              {displayProfile.heroSubtitle}
-            </span>
+            {(() => {
+              const fullTitle = `${displayProfile.heroTitle} ${displayProfile.heroSubtitle}`.trim();
+              const betterIndex = fullTitle.indexOf('Better');
+              if (betterIndex > 0) {
+                const beforeBetter = fullTitle.substring(0, betterIndex).trim();
+                const fromBetter = fullTitle.substring(betterIndex);
+                return (
+                  <>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-zinc-400">
+                      {beforeBetter}
+                    </span>
+                    <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-white/70 to-zinc-500">
+                      {fromBetter}
+                    </span>
+                  </>
+                );
+              }
+              return (
+                <>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-zinc-400">
+                    {displayProfile.heroTitle}
+                  </span>
+                  <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-white/70 to-zinc-500">
+                    {displayProfile.heroSubtitle}
+                  </span>
+                </>
+              );
+            })()}
           </h1>
 
           <p className="text-xs md:text-sm text-secondary max-w-xl mx-auto lg:mx-0 leading-relaxed">
@@ -411,29 +432,18 @@ const Home: React.FC = () => {
         <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-8">Skills & Tools</h2>
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
-          .skill-card:hover .skill-icon { background-color: var(--hover-color) !important; }
           .pixel-font { font-family: 'Silkscreen', monospace; }
         `}</style>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {SKILLS.map((skill) => (
-            <SpotlightCard key={skill.id} skill={skill}>
+            <SpotlightCard key={skill.id}>
               {/* Content */}
               <div className="relative h-full bg-zinc-900/50 p-6 flex flex-col items-center justify-center z-10 border border-zinc-800 rounded-lg">
-                {/* Icon - 28x28 with color change on hover */}
-                <div
-                  className="skill-icon w-7 h-7 transition-all duration-300"
-                  style={{
-                    WebkitMaskImage: `url(${skill.icon})`,
-                    maskImage: `url(${skill.icon})`,
-                    WebkitMaskSize: 'contain',
-                    maskSize: 'contain',
-                    WebkitMaskRepeat: 'no-repeat',
-                    maskRepeat: 'no-repeat',
-                    WebkitMaskPosition: 'center',
-                    maskPosition: 'center',
-                    backgroundColor: skill.initialColor,
-                    imageRendering: 'pixelated',
-                  }}
+                {/* Icon - 28x28 with original SVG colors */}
+                <img
+                  src={skill.icon}
+                  alt={skill.name}
+                  className="w-7 h-7"
                 />
 
                 {/* Name - pixel font with increased margin */}
@@ -467,7 +477,7 @@ const Home: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {BENTO_ITEMS.map((item) => {
             const colSpan = item.size.includes('col-span-3') ? 'md:col-span-3' :
-                           item.size.includes('col-span-2') ? 'md:col-span-2' : 'md:col-span-1';
+              item.size.includes('col-span-2') ? 'md:col-span-2' : 'md:col-span-1';
 
             return (
               <Link

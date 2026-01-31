@@ -9,6 +9,19 @@ const Sidebar: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Try to get preloaded nav items from sessionStorage first
+    const preloadedNav = sessionStorage.getItem('navItems');
+    if (preloadedNav) {
+      try {
+        setNavItems(JSON.parse(preloadedNav));
+        setLoading(false);
+        return;
+      } catch (e) {
+        console.error('Failed to parse preloaded nav items:', e);
+      }
+    }
+
+    // Fallback to fetching
     const fetchNav = async () => {
       const data = await getNavigation();
       setNavItems(data);
@@ -33,12 +46,26 @@ const Sidebar: React.FC = () => {
 
   if (loading) {
     return (
-      <aside className="fixed left-0 top-0 h-full w-64 bg-surface border-r border-white/5 hidden md:flex flex-col p-8 justify-between z-20">
-        <div>
-          <div className="mb-10">
-            <h1 className="text-2xl font-bold tracking-tight text-white">Portfolio</h1>
-            <p className="text-sm text-secondary mt-1">Loading...</p>
-          </div>
+      <aside className="fixed left-0 top-0 h-full w-64 bg-surface border-r border-white/5 hidden md:flex flex-col p-6 z-20">
+        {/* Header skeleton */}
+        <div className="mb-10">
+          <div className="h-6 w-28 bg-zinc-800 rounded animate-pulse" />
+          <div className="h-3 w-36 bg-zinc-800/60 rounded mt-2 animate-pulse" />
+        </div>
+
+        {/* Navigation skeleton */}
+        <nav className="space-y-1">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center gap-3 px-3 py-2.5">
+              <div className="w-4 h-4 bg-zinc-800 rounded animate-pulse" />
+              <div className="h-4 bg-zinc-800 rounded animate-pulse" style={{ width: `${60 + i * 10}px` }} />
+            </div>
+          ))}
+        </nav>
+
+        {/* Footer skeleton */}
+        <div className="mt-auto">
+          <div className="h-3 w-40 bg-zinc-800/40 rounded animate-pulse" />
         </div>
       </aside>
     );
@@ -63,11 +90,10 @@ const Sidebar: React.FC = () => {
             <Link
               key={item.id}
               to={item.path.trim()}
-              className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                isActive
-                  ? 'bg-accent text-black'
-                  : 'text-secondary hover:text-white hover:bg-white/5'
-              }`}
+              className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive
+                ? 'bg-accent text-black'
+                : 'text-secondary hover:text-white hover:bg-white/5'
+                }`}
             >
               <Icon size={16} />
               {item.label}

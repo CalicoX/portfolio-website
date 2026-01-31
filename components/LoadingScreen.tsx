@@ -2,14 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import MatrixBackground from './MatrixBackground';
 
 // Module-level state to persist across remounts
+// Check sessionStorage to persist across page refreshes
+const isLoadingComplete = typeof window !== 'undefined' && sessionStorage.getItem('loadingComplete') === 'true';
+
 let loadingState = {
-  complete: false,
-  progress: 0,
+  complete: isLoadingComplete,
+  progress: isLoadingComplete ? 100 : 0,
   blocks: [] as boolean[],
   blockColors: [] as string[],
   shuffledIndices: [] as number[],
   currentIndex: 0,
-  initialized: false
+  initialized: isLoadingComplete
 };
 
 const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
@@ -73,6 +76,8 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         clearInterval(titleGlitchInterval);
         loadingState.complete = true;
         loadingState.progress = 100;
+        // Save to sessionStorage so page refresh skips loading screen
+        sessionStorage.setItem('loadingComplete', 'true');
 
         setProgress(100);
         setCompletionFlash(true);
@@ -290,8 +295,8 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
                   backgroundColor: lit ? (isGlitch ? '#a3e635' : color) : '#18181b',
                   boxShadow: lit
                     ? (isGlitch
-                        ? `0 0 15px ${color}, 0 0 25px ${color}, 0 0 35px #22c55e`
-                        : `0 0 8px ${color}, 0 0 15px rgba(34,197,94,0.5)`)
+                      ? `0 0 15px ${color}, 0 0 25px ${color}, 0 0 35px #22c55e`
+                      : `0 0 8px ${color}, 0 0 15px rgba(34,197,94,0.5)`)
                     : 'inset 0 0 5px rgba(0,0,0,0.5)',
                 }}
               />
@@ -351,12 +356,12 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
           <div className="mt-3 md:mt-4 text-center">
             <p className="text-[10px] sm:text-xs md:text-sm text-zinc-500 font-mono tracking-wide">
               {progress < 15 ? '█ INITIALIZING...' :
-               progress < 30 ? '█ LOADING MODULES...' :
-               progress < 45 ? '█ CONNECTING...' :
-               progress < 60 ? '█ DECRYPTING...' :
-               progress < 75 ? '█ RENDERING...' :
-               progress < 90 ? '█ OPTIMIZING...' :
-               '█ SYSTEM READY'}
+                progress < 30 ? '█ LOADING MODULES...' :
+                  progress < 45 ? '█ CONNECTING...' :
+                    progress < 60 ? '█ DECRYPTING...' :
+                      progress < 75 ? '█ RENDERING...' :
+                        progress < 90 ? '█ OPTIMIZING...' :
+                          '█ SYSTEM READY'}
             </p>
           </div>
 

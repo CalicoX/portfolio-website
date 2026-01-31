@@ -9,6 +9,7 @@ import Photos from './pages/Photos';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import AdminPanel from './pages/AdminPanel';
 import { getNavigation } from './lib/contentful';
 import { NavItem } from './types';
 
@@ -67,6 +68,9 @@ function App() {
 
           {/* Blog routes */}
           <Route path="blog" element={<Blog />} />
+
+          {/* Hidden Admin route */}
+          <Route path="admin" element={<AdminPanel />} />
           <Route path="blog/:slug" element={<BlogPost />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
