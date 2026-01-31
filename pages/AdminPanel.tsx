@@ -610,13 +610,13 @@ const AdminPanel: React.FC = () => {
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
                     {/* Simplified Tabs List */}
-                    <div className="flex items-center justify-between">
-                        <TabsList className="h-10">
+                    <div className="w-full overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden">
+                        <TabsList className="h-auto w-full justify-start md:w-auto md:justify-center">
                             {CONTENT_MODELS.map(model => (
                                 <TabsTrigger
                                     key={model.id}
                                     value={model.id}
-                                    className="px-4"
+                                    className="px-4 py-2"
                                 >
                                     {model.name}
                                 </TabsTrigger>
