@@ -1,33 +1,14 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import MobileNav from './MobileNav';
 import MobileHeader from './MobileHeader';
 import DotMatrixBackground from './DotMatrixBackground';
 import LoadingScreen from './LoadingScreen';
 import { useAdminShortcut } from '../hooks/useKonamiCode';
-import { Lock, X, Loader2 } from 'lucide-react';
-import {
-  generateAuthToken,
-  validateAuthToken,
-  storeAuthToken,
-  getStoredAuthToken,
-  hasAuthToken,
-  clearAuthToken,
-} from '../lib/adminAuth';
-import { verifyTotpCode, isTotpEnabled } from '../lib/totp';
-
-// SHA-256 hash function
-async function sha256(message: string): Promise<string> {
-  const msgBuffer = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-}
 
 const Layout: React.FC = () => {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   // Check sessionStorage to skip loading screen on refresh
   const loadingAlreadyComplete = typeof window !== 'undefined' && sessionStorage.getItem('loadingComplete') === 'true';
   const [isLoading, setIsLoading] = useState(!loadingAlreadyComplete);
@@ -35,86 +16,13 @@ const Layout: React.FC = () => {
   const cursorStyleRef = useRef<HTMLStyleElement | null>(null);
   const cursorUrlRef = useRef<string | null>(null);
 
-  // Admin panel states
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [password, setPassword] = useState('');
-  const [totpCode, setTotpCode] = useState('');
-  const [showTotpInput, setShowTotpInput] = useState(false);
-  const [passwordError, setPasswordError] = useState('');
-  const [verifying, setVerifying] = useState(false);
-
-  // Shared secret trigger logic
-  const handleSecretTrigger = async () => {
-    const token = getStoredAuthToken();
-    const expectedHash = import.meta.env.VITE_ADMIN_PASSWORD_HASH || '';
-
-    if (token && await validateAuthToken(token, expectedHash)) {
-      navigate('/admin');
-    } else {
-      clearAuthToken(); // Clear invalid token
-      setShowPasswordModal(true);
-      setShowTotpInput(false); // Reset TOTP state
-      setPassword('');
-      setTotpCode('');
-      setPasswordError('');
-    }
+  // Redirect to standalone admin panel
+  const handleSecretTrigger = () => {
+    window.location.href = 'https://calicox.github.io/portfolio-admin/';
   };
 
-  // Secure admin shortcut with token validation
+  // Admin shortcut - redirects to standalone admin
   useAdminShortcut(handleSecretTrigger);
-
-  const completeLogin = async () => {
-    const expectedHash = import.meta.env.VITE_ADMIN_PASSWORD_HASH || '';
-    // Generate and store secure auth token
-    const token = await generateAuthToken(expectedHash);
-    storeAuthToken(token);
-    setShowPasswordModal(false);
-    setPassword('');
-    setTotpCode('');
-    setShowTotpInput(false);
-    navigate('/admin');
-  };
-
-  const handleLoginSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setVerifying(true);
-    setPasswordError('');
-
-    try {
-      // Step 1: Verify Password (if not already verified)
-      if (!showTotpInput) {
-        const hashedPassword = await sha256(password);
-        const expectedHash = import.meta.env.VITE_ADMIN_PASSWORD_HASH || '';
-
-        if (hashedPassword === expectedHash.toLowerCase()) {
-          // Password valid, check if TOTP is enabled
-          if (isTotpEnabled()) {
-            setShowTotpInput(true);
-            setVerifying(false); // Stop verifying to let user enter code
-            return;
-          }
-
-          await completeLogin();
-        } else {
-          setPasswordError('Incorrect password');
-        }
-      }
-      // Step 2: Verify TOTP
-      else {
-        if (await verifyTotpCode(totpCode)) {
-          await completeLogin();
-        } else {
-          setPasswordError('Invalid authentication code');
-        }
-      }
-    } catch (err) {
-      setPasswordError('Verification failed');
-    } finally {
-      if (!showTotpInput || (showTotpInput && passwordError)) {
-        setVerifying(false);
-      }
-    }
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -176,9 +84,6 @@ const Layout: React.FC = () => {
     }, 100);
   }, []);
 
-  // Check if we're on admin page
-  const isAdminPage = pathname === '/admin';
-
   return (
     <div className="min-h-screen bg-background text-primary flex flex-col md:flex-row">
       {isLoading ? (
@@ -187,99 +92,23 @@ const Layout: React.FC = () => {
         <>
           {isReady && (
             <>
-              {/* Hide navigation on admin page */}
-              {!isAdminPage && <Sidebar />}
-              {!isAdminPage && <MobileHeader onSecretTrigger={handleSecretTrigger} />}
+              <Sidebar />
+              <MobileHeader onSecretTrigger={handleSecretTrigger} />
 
               {/* Main Content Area */}
-              <main className={`flex-1 ${!isAdminPage ? 'md:ml-64' : ''} w-full relative min-h-screen ${pathname === '/contact' ? '!p-0 !pt-0 !pb-0' : ''}`}>
+              <main className={`flex-1 md:ml-64 w-full relative min-h-screen ${pathname === '/contact' ? '!p-0 !pt-0 !pb-0' : ''}`}>
                 {/* Render background only on Home page */}
                 {pathname === '/' && <DotMatrixBackground />}
 
-                <div className={`w-full h-full ${isAdminPage ? 'p-0' : 'p-6 pt-24 md:p-12 md:pt-12 pb-24 md:pb-12'} animate-fade-in relative z-10 ${pathname === '/contact' ? '!p-0 !pt-0 !pb-0' : ''}`}>
+                <div className={`w-full h-full p-6 pt-24 md:p-12 md:pt-12 pb-24 md:pb-12 animate-fade-in relative z-10 ${pathname === '/contact' ? '!p-0 !pt-0 !pb-0' : ''}`}>
                   <Outlet />
                 </div>
               </main>
 
-              {!isAdminPage && <MobileNav />}
+              <MobileNav />
             </>
           )}
         </>
-      )}
-
-      {/* Password Modal */}
-      {showPasswordModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md">
-          <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6 w-full max-w-sm mx-4 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-accent/20 rounded-lg">
-                  <Lock size={20} className="text-accent" />
-                </div>
-                <h3 className="text-lg font-semibold">
-                  {showTotpInput ? 'Two-Factor Auth' : 'Admin Access'}
-                </h3>
-              </div>
-              <button
-                onClick={() => {
-                  setShowPasswordModal(false);
-                  setShowTotpInput(false);
-                  setPassword('');
-                  setTotpCode('');
-                }}
-                className="p-1 hover:bg-zinc-800 rounded-lg transition-colors"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleLoginSubmit}>
-              {!showTotpInput ? (
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password"
-                  className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:border-accent outline-none mb-3"
-                  autoFocus
-                />
-              ) : (
-                <div className="mb-3">
-                  <p className="text-sm text-zinc-400 mb-2">
-                    Enter the code from your authenticator app
-                  </p>
-                  <input
-                    type="text"
-                    value={totpCode}
-                    onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    placeholder="000000"
-                    className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg focus:border-accent outline-none text-center text-xl tracking-widest"
-                    autoFocus
-                    pattern="\d{6}"
-                    inputMode="numeric"
-                  />
-                </div>
-              )}
-              {passwordError && (
-                <p className="text-red-400 text-sm mb-3">{passwordError}</p>
-              )}
-              <button
-                type="submit"
-                disabled={verifying || (!showTotpInput && !password) || (showTotpInput && totpCode.length !== 6)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-accent text-black font-semibold rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
-              >
-                {verifying ? (
-                  <>
-                    <Loader2 size={18} className="animate-spin" />
-                    Verifying...
-                  </>
-                ) : (
-                  showTotpInput ? 'Verify Code' : 'Unlock'
-                )}
-              </button>
-            </form>
-          </div>
-        </div>
       )}
     </div>
   );
