@@ -28,6 +28,16 @@ const Sidebar: React.FC = () => {
       setLoading(false);
     };
     fetchNav();
+
+    // Keyboard shortcut: Ctrl+Shift+A (or Cmd+Shift+A on Mac) to open admin
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        window.open('https://calicox.github.io/portfolio-admin/', '_blank');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   // Get current path - with HashRouter, use location.key to force re-render on navigation
