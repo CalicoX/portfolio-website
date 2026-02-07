@@ -589,6 +589,7 @@ const AdminPanel: React.FC = () => {
                         </div>
                         <div>
                             <h1 className="text-lg font-semibold tracking-tight">Admin</h1>
+                            <p className="text-xs text-muted-foreground">Secure session active</p>
                         </div>
                     </div>
                     <Button variant="ghost" size="sm" onClick={handleLogout}>
@@ -610,13 +611,13 @@ const AdminPanel: React.FC = () => {
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
                     {/* Simplified Tabs List */}
-                    <div className="w-full overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden">
-                        <TabsList className="h-auto w-full justify-start md:w-auto md:justify-center">
+                    <div className="border-b border-border/50 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+                        <TabsList className="h-auto bg-transparent p-0 gap-0 w-full min-w-max md:min-w-0 grid grid-cols-6">
                             {CONTENT_MODELS.map(model => (
                                 <TabsTrigger
                                     key={model.id}
                                     value={model.id}
-                                    className="px-4 py-2"
+                                    className="px-3 py-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none whitespace-nowrap text-sm"
                                 >
                                     {model.name}
                                 </TabsTrigger>

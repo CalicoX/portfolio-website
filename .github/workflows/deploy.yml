@@ -22,6 +22,12 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_CONTENTFUL_SPACE_ID: ${{ secrets.VITE_CONTENTFUL_SPACE_ID }}
+          VITE_CONTENTFUL_ACCESS_TOKEN: ${{ secrets.VITE_CONTENTFUL_ACCESS_TOKEN }}
+          VITE_CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.VITE_CONTENTFUL_MANAGEMENT_TOKEN }}
+          VITE_ADMIN_PASSWORD_HASH: ${{ secrets.VITE_ADMIN_PASSWORD_HASH }}
+          VITE_TOTP_SECRET: ${{ secrets.VITE_TOTP_SECRET }}
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
