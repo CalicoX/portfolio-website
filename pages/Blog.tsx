@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock } from 'lucide-react';
+import { Calendar, Clock, ArrowDownWideNarrow, ArrowUpNarrowWide } from 'lucide-react';
 import { getBlogPosts } from '../lib/contentful';
 import type { BlogPost } from '../types';
 import MatrixBackground from '../components/MatrixBackground';
@@ -82,6 +82,7 @@ const Blog: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterCategory, setFilterCategory] = useState<string>('All');
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -93,7 +94,11 @@ const Blog: React.FC = () => {
   }, []);
 
   const categories = ['All', ...Array.from(new Set(posts.map(p => p.category)))];
-  const filteredPosts = filterCategory === 'All' ? posts : posts.filter(p => p.category === filterCategory);
+  const filteredPosts = (filterCategory === 'All' ? posts : posts.filter(p => p.category === filterCategory))
+    .sort((a, b) => {
+      const diff = new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime();
+      return sortOrder === 'newest' ? diff : -diff;
+    });
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -109,24 +114,35 @@ const Blog: React.FC = () => {
         title="Blog"
         description="Thoughts on design, development, and everything in between."
       >
-        {/* Category Filter - Swiss minimal tabs */}
-        <div className="flex items-center gap-1 mt-8 border-b border-zinc-800">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setFilterCategory(category)}
-              className={`relative px-4 py-2.5 text-sm transition-colors ${
-                filterCategory === category
-                  ? 'text-white'
-                  : 'text-zinc-500 hover:text-zinc-300'
-              }`}
-            >
-              {category}
-              {filterCategory === category && (
-                <span className="absolute bottom-0 left-0 right-0 h-px bg-white" />
-              )}
-            </button>
-          ))}
+        {/* Category Filter + Sort */}
+        <div className="flex items-center justify-between mt-8 border-b border-zinc-800">
+          <div className="flex items-center gap-1">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setFilterCategory(category)}
+                className={`relative px-4 py-2.5 text-sm transition-colors ${
+                  filterCategory === category
+                    ? 'text-white'
+                    : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                {category}
+                {filterCategory === category && (
+                  <span className="absolute bottom-0 left-0 right-0 h-px bg-white" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Sort Toggle */}
+          <button
+            onClick={() => setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest')}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs text-zinc-500 hover:text-white transition-colors"
+          >
+            {sortOrder === 'newest' ? <ArrowDownWideNarrow size={14} /> : <ArrowUpNarrowWide size={14} />}
+            <span>{sortOrder === 'newest' ? 'Newest' : 'Oldest'}</span>
+          </button>
         </div>
       </PageHeader>
 
