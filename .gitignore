@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 .env
 .env.example
+
+# Project documentation (contains sensitive workflow info)
+MEMORY.md
