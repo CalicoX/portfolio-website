@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { Calendar, Clock, Tag, ArrowLeft, Share2, MessageCircle, Send, ArrowUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -21,10 +22,27 @@ const BlogPostPage: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
+      const scrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      setShowScrollTop(scrollY > 400);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    // Initial check
+    handleScroll();
+
+    // Use scroll event with capture to ensure it fires
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+
+    // Also listen on document for hash router scenarios
+    document.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+
+    // Fallback: check periodically
+    const interval = setInterval(handleScroll, 200);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('scroll', handleScroll);
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -120,15 +138,28 @@ const BlogPostPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen max-w-[950px] mx-auto">
-      {/* Back Button */}
-      <Link
-        to="/blog"
-        className="inline-flex items-center gap-2 text-zinc-400 hover:text-accent transition-colors mb-8 text-sm"
-      >
-        <ArrowLeft size={16} />
-        <span>BACK TO BLOG</span>
-      </Link>
+    <>
+      {/* Back to Top Button - rendered to body via Portal */}
+      {showScrollTop && typeof document !== 'undefined' && createPortal(
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 w-12 h-12 bg-accent text-black rounded-full flex items-center justify-center shadow-lg hover:bg-accent/80 transition-all duration-300 hover:scale-110 z-[9999]"
+          aria-label="Back to top"
+        >
+          <ArrowUp size={20} />
+        </button>,
+        document.body
+      )}
+
+      <div className="min-h-screen max-w-[950px] mx-auto">
+        {/* Back Button */}
+        <Link
+          to="/blog"
+          className="inline-flex items-center gap-2 text-zinc-400 hover:text-accent transition-colors mb-8 text-sm"
+        >
+          <ArrowLeft size={16} />
+          <span>BACK TO BLOG</span>
+        </Link>
 
       {/* Header Section */}
       <div className="mb-8">
@@ -308,18 +339,8 @@ const BlogPostPage: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Back to Top Button */}
-      {showScrollTop && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 w-12 h-12 bg-accent text-black rounded-full flex items-center justify-center shadow-lg hover:bg-accent/80 transition-all duration-300 hover:scale-110 z-50"
-          aria-label="Back to top"
-        >
-          <ArrowUp size={20} />
-        </button>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 
