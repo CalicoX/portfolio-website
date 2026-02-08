@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Calendar, Clock, Tag, ArrowLeft, Share2, MessageCircle, Send } from 'lucide-react';
+import { Calendar, Clock, Tag, ArrowLeft, Share2, MessageCircle, Send, ArrowUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -17,6 +17,15 @@ const BlogPostPage: React.FC = () => {
   const [commentAuthor, setCommentAuthor] = useState('');
   const [commentContent, setCommentContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,6 +71,10 @@ const BlogPostPage: React.FC = () => {
       setComments(updated);
     }
     setSubmitting(false);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (loading) {
@@ -171,7 +184,7 @@ const BlogPostPage: React.FC = () => {
 
       {/* Content */}
       <div className="max-w-[950px] mx-auto">
-        <article className="prose prose-invert prose-lg max-w-none">
+        <article className="prose prose-invert prose-lg max-w-none blog-content">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw]}
@@ -294,6 +307,17 @@ const BlogPostPage: React.FC = () => {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Back to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 w-12 h-12 bg-accent text-black rounded-full flex items-center justify-center shadow-lg hover:bg-accent/80 transition-all duration-300 hover:scale-110 z-50"
+          aria-label="Back to top"
+        >
+          <ArrowUp size={20} />
+        </button>
       )}
     </div>
   );
