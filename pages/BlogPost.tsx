@@ -1,25 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Calendar, Clock, Tag, ArrowLeft, Share2 } from 'lucide-react';
+import { Calendar, Clock, Tag, ArrowLeft, Share2, MessageCircle, Send } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { getBlogPostBySlug, getBlogPosts } from '../lib/contentful';
-import type { BlogPost } from '../types';
-import MatrixBackground from '../components/MatrixBackground';
+import { getNotionBlogComments, postNotionBlogComment } from '../lib/notion';
+import type { BlogPost, BlogComment } from '../types';
 
-const BlogPost: React.FC = () => {
+const BlogPostPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [comments, setComments] = useState<BlogComment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [commentAuthor, setCommentAuthor] = useState('');
+  const [commentContent, setCommentContent] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!slug) return;
 
-      const postData = await getBlogPostBySlug(slug);
+      // Fetch post, related posts, and comments in parallel
+      const [postData, allPosts, postComments] = await Promise.all([
+        getBlogPostBySlug(slug),
+        getBlogPosts(),
+        getNotionBlogComments(slug),
+      ]);
+
       setPost(postData);
+      setComments(postComments);
 
       if (postData) {
-        const allPosts = await getBlogPosts();
         const related = allPosts
           .filter(p => p.id !== postData.id && (p.category === postData.category || p.tags?.some(t => postData.tags?.includes(t))))
           .slice(0, 3);
@@ -36,10 +49,48 @@ const BlogPost: React.FC = () => {
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
+  const handleSubmitComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!slug || !commentAuthor.trim() || !commentContent.trim()) return;
+
+    setSubmitting(true);
+    const success = await postNotionBlogComment(slug, commentAuthor.trim(), commentContent.trim());
+    if (success) {
+      setCommentAuthor('');
+      setCommentContent('');
+      const updated = await getNotionBlogComments(slug);
+      setComments(updated);
+    }
+    setSubmitting(false);
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-zinc-500">Loading...</div>
+      <div className="min-h-screen max-w-[950px] mx-auto animate-pulse">
+        {/* Back button skeleton */}
+        <div className="h-4 w-32 bg-zinc-800 rounded mb-8" />
+        {/* Category skeleton */}
+        <div className="h-5 w-20 bg-zinc-800 rounded-full mb-4" />
+        {/* Title skeleton */}
+        <div className="h-10 w-3/4 bg-zinc-800 rounded mb-4" />
+        <div className="h-10 w-1/2 bg-zinc-800 rounded mb-6" />
+        {/* Meta skeleton */}
+        <div className="flex gap-6 mb-8">
+          <div className="h-4 w-32 bg-zinc-800 rounded" />
+          <div className="h-4 w-24 bg-zinc-800 rounded" />
+          <div className="h-4 w-20 bg-zinc-800 rounded" />
+        </div>
+        {/* Cover image skeleton */}
+        <div className="w-full h-64 md:h-96 bg-zinc-800 rounded-xl mb-12" />
+        {/* Content skeleton */}
+        <div className="space-y-4">
+          <div className="h-4 bg-zinc-800 rounded w-full" />
+          <div className="h-4 bg-zinc-800 rounded w-5/6" />
+          <div className="h-4 bg-zinc-800 rounded w-full" />
+          <div className="h-4 bg-zinc-800 rounded w-4/6" />
+          <div className="h-4 bg-zinc-800 rounded w-full" />
+          <div className="h-4 bg-zinc-800 rounded w-3/4" />
+        </div>
       </div>
     );
   }
@@ -56,13 +107,11 @@ const BlogPost: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen">
-      <MatrixBackground opacity={0.08} />
-
+    <div className="min-h-screen max-w-[950px] mx-auto">
       {/* Back Button */}
       <Link
         to="/blog"
-        className="inline-flex items-center gap-2 text-zinc-400 hover:text-accent transition-colors mb-8 font-mono text-sm"
+        className="inline-flex items-center gap-2 text-zinc-400 hover:text-accent transition-colors mb-8 text-sm"
       >
         <ArrowLeft size={16} />
         <span>BACK TO BLOG</span>
@@ -71,17 +120,17 @@ const BlogPost: React.FC = () => {
       {/* Header Section */}
       <div className="mb-8">
         {/* Category */}
-        <span className="inline-block px-3 py-1 bg-accent/90 text-black text-xs font-bold rounded-full font-mono mb-4">
+        <span className="inline-block px-3 py-1 bg-accent/90 text-black text-xs font-bold rounded-full mb-4">
           {post.category}
         </span>
 
         {/* Title */}
-        <h1 className="pixel-font text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight" style={{ textShadow: '2px 2px 0px #22c55e' }}>
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
           {post.title}
         </h1>
 
         {/* Meta */}
-        <div className="flex flex-wrap items-center gap-6 text-sm text-zinc-400 font-mono mb-6">
+        <div className="flex flex-wrap items-center gap-6 text-sm text-zinc-400 mb-6">
           <div className="flex items-center gap-2">
             <Calendar size={16} />
             <span>{formatDate(post.publishDate)}</span>
@@ -101,7 +150,7 @@ const BlogPost: React.FC = () => {
           <div className="flex items-center gap-2 flex-wrap">
             <Tag size={16} className="text-zinc-500" />
             {post.tags.map((tag, i) => (
-              <span key={i} className="text-sm text-zinc-500 font-mono hover:text-accent transition-colors">
+              <span key={i} className="text-sm text-zinc-500 hover:text-accent transition-colors">
                 #{tag}
               </span>
             ))}
@@ -110,26 +159,25 @@ const BlogPost: React.FC = () => {
       </div>
 
       {/* Cover Image */}
-      <div className="relative w-full h-64 md:h-96 lg:h-[500px] rounded-xl overflow-hidden mb-12 border-2 border-zinc-800">
-        <img
-          src={post.coverImage}
-          alt={post.title}
-          className="w-full h-full object-cover"
-        />
-        {/* Pixel corners */}
-        <div className="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-accent" />
-        <div className="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-accent" />
-        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-accent" />
-        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-accent" />
-      </div>
+      {post.coverImage && (
+        <div className="w-full h-64 md:h-96 lg:h-[500px] rounded-xl overflow-hidden mb-12">
+          <img
+            src={post.coverImage}
+            alt={post.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
       {/* Content */}
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-[950px] mx-auto">
         <article className="prose prose-invert prose-lg max-w-none">
-          <div
-            className="text-zinc-300 leading-relaxed space-y-4"
-            dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br>') }}
-          />
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
+          >
+            {typeof post.content === 'string' ? post.content : ''}
+          </ReactMarkdown>
         </article>
 
         {/* Share Section */}
@@ -137,13 +185,13 @@ const BlogPost: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-zinc-400">
               <Share2 size={20} />
-              <span className="font-mono text-sm">Share this post</span>
+              <span className="text-sm">Share this post</span>
             </div>
             <div className="flex gap-3">
-              <button className="px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-400 hover:text-accent hover:border-accent transition-all font-mono text-sm">
+              <button className="px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-400 hover:text-accent hover:border-accent transition-all text-sm">
                 Twitter
               </button>
-              <button className="px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-400 hover:text-accent hover:border-accent transition-all font-mono text-sm">
+              <button className="px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-400 hover:text-accent hover:border-accent transition-all text-sm">
                 Copy Link
               </button>
             </div>
@@ -151,10 +199,73 @@ const BlogPost: React.FC = () => {
         </div>
       </div>
 
+      {/* Comments Section */}
+      <div className="mt-12 pt-8 border-t border-zinc-800">
+        <div className="flex items-center gap-2 mb-6">
+          <MessageCircle size={20} className="text-accent" />
+          <h2 className="text-xl font-bold text-white">
+            Comments {comments.length > 0 && `(${comments.length})`}
+          </h2>
+        </div>
+
+        {comments.length > 0 ? (
+          <div className="space-y-4">
+            {comments.map((comment) => (
+              <div key={comment.id} className="bg-zinc-900/40 border border-zinc-800/50 rounded-lg p-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm font-bold">
+                    {comment.author.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <span className="text-white text-sm font-medium">{comment.author}</span>
+                    <span className="text-zinc-500 text-xs ml-2">
+                      {formatDate(comment.createdTime)}
+                    </span>
+                  </div>
+                </div>
+                <p className="text-zinc-300 text-sm leading-relaxed pl-11">{comment.content}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-zinc-500 text-sm">No comments yet.</p>
+        )}
+
+        {/* Comment Form */}
+        <form onSubmit={handleSubmitComment} className="mt-6 space-y-4">
+          <input
+            type="text"
+            placeholder="Your name"
+            value={commentAuthor}
+            onChange={(e) => setCommentAuthor(e.target.value)}
+            maxLength={50}
+            required
+            className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-accent transition-colors"
+          />
+          <textarea
+            placeholder="Write a comment..."
+            value={commentContent}
+            onChange={(e) => setCommentContent(e.target.value)}
+            maxLength={2000}
+            required
+            rows={3}
+            className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-accent transition-colors resize-none"
+          />
+          <button
+            type="submit"
+            disabled={submitting || !commentAuthor.trim() || !commentContent.trim()}
+            className="inline-flex items-center gap-2 px-5 py-2 bg-accent text-black text-sm font-bold rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Send size={14} />
+            {submitting ? 'Submitting...' : 'Submit'}
+          </button>
+        </form>
+      </div>
+
       {/* Related Posts */}
       {relatedPosts.length > 0 && (
         <div className="mt-16 pt-12 border-t border-zinc-800">
-          <h2 className="pixel-font text-2xl text-white mb-8">Related Posts</h2>
+          <h2 className="text-2xl font-bold text-white mb-8">Related Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {relatedPosts.map((related) => (
               <Link
@@ -171,10 +282,10 @@ const BlogPost: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent" />
                 </div>
                 <div className="p-4">
-                  <h3 className="pixel-font text-sm text-white mb-2 group-hover:text-accent transition-colors line-clamp-2">
+                  <h3 className="text-sm font-medium text-white mb-2 group-hover:text-accent transition-colors line-clamp-2">
                     {related.title}
                   </h3>
-                  <div className="flex items-center gap-2 text-xs text-zinc-500 font-mono">
+                  <div className="flex items-center gap-2 text-xs text-zinc-500">
                     <Clock size={12} />
                     <span>{related.readTime}</span>
                   </div>
@@ -184,13 +295,8 @@ const BlogPost: React.FC = () => {
           </div>
         </div>
       )}
-
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
-        .pixel-font { font-family: 'Silkscreen', monospace; }
-      `}</style>
     </div>
   );
 };
 
-export default BlogPost;
+export default BlogPostPage;

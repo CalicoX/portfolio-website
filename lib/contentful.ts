@@ -213,61 +213,26 @@ export const getNavigation = async (): Promise<NavItem[]> => {
   }
 };
 
-// Blog Posts
+// Blog Posts - Notion first, fallback to fake data
+import { getNotionBlogPosts, getNotionBlogPostBySlug } from './notion';
+
 export const getBlogPosts = async (): Promise<BlogPost[]> => {
-  try {
-    const response = await client.getEntries({
-      content_type: 'blogPost',
-      order: ['-fields.publishDate'],
-      include: 2,
-    });
-    return response.items.map((item: any) => ({
-      id: item.sys.id,
-      title: item.fields.title || '',
-      slug: item.fields.slug || '',
-      excerpt: item.fields.excerpt || '',
-      content: item.fields.content || '',
-      coverImage: getImageUrl(item.fields.coverImage),
-      author: item.fields.author || 'Alex',
-      publishDate: item.fields.publishDate || '',
-      readTime: item.fields.readTime || '5 min read',
-      tags: item.fields.tags || [],
-      category: item.fields.category || 'Design',
-    }));
-  } catch (error) {
-    console.error('Error fetching blog posts:', error);
-    return getFakeBlogPosts();
-  }
+  // Try Notion first
+  const notionPosts = await getNotionBlogPosts();
+  if (notionPosts.length > 0) return notionPosts;
+
+  // Fallback to fake data
+  return getFakeBlogPosts();
 };
 
 export const getBlogPostBySlug = async (slug: string): Promise<BlogPost | null> => {
-  try {
-    const response = await client.getEntries({
-      content_type: 'blogPost',
-      'fields.slug': slug,
-      include: 2,
-      limit: 1,
-    });
-    if (response.items.length === 0) return null;
-    const item = response.items[0];
-    return {
-      id: item.sys.id,
-      title: item.fields.title || '',
-      slug: item.fields.slug || '',
-      excerpt: item.fields.excerpt || '',
-      content: item.fields.content || '',
-      coverImage: getImageUrl(item.fields.coverImage),
-      author: item.fields.author || 'Alex',
-      publishDate: item.fields.publishDate || '',
-      readTime: item.fields.readTime || '5 min read',
-      tags: item.fields.tags || [],
-      category: item.fields.category || 'Design',
-    };
-  } catch (error) {
-    console.error('Error fetching blog post:', error);
-    const fakePosts = getFakeBlogPosts();
-    return fakePosts.find(p => p.slug === slug) || null;
-  }
+  // Try Notion first
+  const notionPost = await getNotionBlogPostBySlug(slug);
+  if (notionPost) return notionPost;
+
+  // Fallback to fake data
+  const fakePosts = getFakeBlogPosts();
+  return fakePosts.find(p => p.slug === slug) || null;
 };
 
 // Fake blog posts for development/testing

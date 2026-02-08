@@ -75,6 +75,14 @@ export interface BlogPost {
   category: string;
 }
 
+export interface BlogComment {
+  id: string;
+  createdTime: string;
+  author: string;
+  avatarUrl: string;
+  content: string;
+}
+
 // Icon name to component mapping
 export const ICON_MAP: Record<string, LucideIcon> = {
   home: Home,
