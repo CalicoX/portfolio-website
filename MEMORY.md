@@ -70,10 +70,41 @@ portfolio-website/
 - `/contact` - 联系页面
 
 ### 2. 数据管理
-- **Contentful CMS**: 所有动态内容（项目、照片、博客、导航）都从 Contentful 获取
-- **环境变量**:
-  - `VITE_CONTENTFUL_SPACE_ID`
-  - `VITE_CONTENTFUL_ACCESS_TOKEN`
+
+#### CMS 方案
+- **Contentful**: 用于 portfolio、photos、navigation、index、stats 等内容
+- **Notion**: 用于 Blog 博客内容（通过 Cloudflare Worker 代理）
+  - 博客数据流：Notion → Cloudflare Worker（转 Markdown）→ 前端（react-markdown 渲染）
+
+#### Cloudflare Worker（博客 API 代理）
+- **Worker 代码**: `worker/index.js`，配置：`worker/wrangler.toml`
+- **部署命令**: `cd worker && npx wrangler deploy`
+- **Secrets**: `NOTION_API_KEY`、`NOTION_DATABASE_ID`、`NOTION_COMMENTS_DB_ID`
+- **API 端点**:
+  - `GET /posts` - 博客列表
+  - `GET /posts/:slug` - 博客详情（含 Markdown 内容）
+  - `GET /posts/:slug/comments` - 获取评论
+  - `POST /posts/:slug/comments` - 提交评论（body: {author, content}）
+
+#### 评论系统
+- 使用独立的 Notion Comments 数据库
+- 访客可直接在网站提交评论（昵称 + 内容）
+- 评论存储在 Notion，通过 Worker API 读写
+
+#### 环境变量
+```
+VITE_CONTENTFUL_SPACE_ID         # Contentful 空间 ID
+VITE_CONTENTFUL_ACCESS_TOKEN      # Contentful 访问令牌
+VITE_CONTENTFUL_MANAGEMENT_TOKEN  # Contentful 管理令牌
+VITE_ADMIN_PASSWORD_HASH          # 管理员密码哈希
+VITE_TOTP_SECRET                  # TOTP 密钥
+VITE_NOTION_API_URL               # Notion API URL（Cloudflare Worker 地址）
+```
+
+#### GitHub Actions 配置
+- `.github/workflows/deploy.yml` 配置了构建和部署流程
+- 需要在 GitHub Secrets 中配置所有环境变量
+- 推送到 `main` 分支自动触发部署到 GitHub Pages
 
 ### 3. 特色设计
 - **游戏手柄光标**: 自定义 SVG 光标，全局应用
@@ -86,6 +117,34 @@ portfolio-website/
 ### 4. 管理功能
 - **快捷键**: `Ctrl/Cmd + Shift + A` 打开独立管理面板
 - **独立管理面板**: https://calicox.github.io/portfolio-admin/
+
+### 5. Blog 详情页功能
+- **回到顶部按钮**: 滚动超过 400px 后显示，固定在右下角
+  - 使用 React Portal 渲染到 `document.body`，避免父元素影响 `fixed` 定位
+  - 点击平滑滚动到页面顶部
+- **评论系统**: 访客可提交评论，存储在 Notion
+- **相关文章**: 根据分类和标签推荐相关文章
+- **字体**: Blog 内容使用系统默认 sans-serif（非 Geist Mono）
+
+## Notion 数据库字段
+
+### Blog 数据库
+- **Title**: 标题
+- **Slug**: URL 路径
+- **Excerpt**: 摘要
+- **Category**: 分类（rich_text 类型）
+- **Tags**: 标签（multi_select）
+- **Author**: 作者
+- **Publish Date**: 发布日期
+- **Read Time**: 阅读时间
+- **Cover Image**: 封面图片
+- **Published**: 是否发布（checkbox）
+
+### Comments 数据库
+- **Author**: 评论者昵称（title）
+- **Content**: 评论内容（rich_text）
+- **PostSlug**: 文章 slug（rich_text）
+- **CreatedAt**: 创建时间（date）
 
 ## Contentful Content Models
 
@@ -149,6 +208,18 @@ npm run deploy
 2. **图片资源**: 使用 picsum.photos 作为默认占位图
 3. **缓存策略**: 使用 sessionStorage 缓存导航数据
 4. **光标样式**: 全局自定义光标，通过 `!important` 强制应用
+5. **Notion Cover Image**: Notion 的图片 URL 是临时 S3 签名 URL，1 小时后过期（需要长期存储方案）
+6. **Category 字段**: 在 Notion 中是 rich_text 类型，不是 select
+
+## Git 工作流
+
+- **工作分支**: `Home-Macmini`
+- **部署分支**: `main`（合并后 push 触发部署）
+- **提交流程**:
+  1. 在 `Home-Macmini` 分支开发
+  2. 提交更改
+  3. 合并到 `main` 分支
+  4. GitHub Actions 自动构建部署
 
 ## 文件读取优先级
 
@@ -166,9 +237,8 @@ npm run deploy
 
 | 时间 | 分支 | 提交 | 说明 |
 |------|------|------|------|
-
+| 2026-02-08 17:06 | Home-Macmini | 0ef6700 | fix: Blog 详情页改进 - 添加回到顶部按钮（使用 Portal），修复字体 |
+| 2026-02-08 16:46 | Home-Macmini | 6f69499 | feat: Blog 详情页改进 - 添加回到顶部按钮，改用 sans-serif 字体 |
+| 2026-02-08 16:34 | Home-Macmini | 3d0a14e | fix: 添加 VITE_NOTION_API_URL 到 GitHub Actions |
 | 2026-02-08 16:31 | Home-Macmini | f73f5ca | fix: 添加 Notion API 备用 URL 以支持 GitHub Pages 部署 |
 | 2026-02-08 16:19 | Home-Macmini | 052cd22 | feat: integrate Notion as blog CMS with Cloudflare Worker proxy |
-| 2026-02-08 13:45 | Home-Macmini | d729c25 | docs: add commit history tracking to MEMORY.md |
-| 2026-02-08 13:45 | Home-Macmini | 6dd1f39 | test: verify post-commit hook works correctly |
-| 2026-02-08 13:44 | Home-Macmini | 4503d00 | chore: add auto-update MEMORY.md hook |
