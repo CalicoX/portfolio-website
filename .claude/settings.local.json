@@ -38,7 +38,14 @@
       "Bash(shasum -a 256:*)",
       "Bash(git init:*)",
       "Bash(/tmp/cleanup-plan.md << 'EOF'\n# 主站清理计划\n\n## 需要删除的文件：\n1. pages/AdminPanel.tsx - 管理面板主界面\n2. lib/adminAuth.ts - 管理员认证\n3. lib/totp.ts - 2FA 认证\n4. lib/contentfulManagement.ts - Contentful 管理功能\n\n## 需要修改的文件：\n1. components/Layout.tsx - 删除登录弹窗和 admin 相关逻辑\n2. App.tsx - 删除 /admin 路由\n3. hooks/useKonamiCode.ts - 删除或修改为跳转到独立 admin 地址\n\n## 保留的文件：\n1. lib/contentful.ts - 保留（只读功能，主站需要）\n2. components/ui/* - 保留（主站也在使用）\nEOF)",
-      "Bash(/tmp/push-commands.sh << 'EOF'\n#!/bin/bash\ncd /Users/stillpilot/Documents/Development/portfolio-admin\n\n# Add remote\ngit remote add origin https://github.com/CalicoX/portfolio-admin.git\n\n# Push to GitHub\ngit push -u origin main\n\necho \"✅ 推送完成！\"\necho \"📍 仓库地址: https://github.com/CalicoX/portfolio-admin\"\nEOF)"
+      "Bash(/tmp/push-commands.sh << 'EOF'\n#!/bin/bash\ncd /Users/stillpilot/Documents/Development/portfolio-admin\n\n# Add remote\ngit remote add origin https://github.com/CalicoX/portfolio-admin.git\n\n# Push to GitHub\ngit push -u origin main\n\necho \"✅ 推送完成！\"\necho \"📍 仓库地址: https://github.com/CalicoX/portfolio-admin\"\nEOF)",
+      "Bash(gh secret list:*)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(pkill:*)",
+      "Bash(npx shadcn@latest mcp init:*)",
+      "Bash(npx vite:*)",
+      "Bash(/Users/stillpilot/Documents/Development/portfolio-admin/lib/utils.ts << 'EOF'\nimport { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn\\(...inputs: ClassValue[]\\) {\n  return twMerge\\(clsx\\(inputs\\)\\)\n}\nEOF)",
+      "Bash(npx shadcn@latest add:*)"
     ]
   }
 }
