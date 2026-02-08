@@ -100,8 +100,8 @@ const Sidebar: React.FC = () => {
             <Link
               key={item.id}
               to={item.path.trim()}
-              className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isActive
-                ? 'bg-accent text-black'
+              className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${isActive
+                ? 'bg-accent text-white'
                 : 'text-secondary hover:text-white hover:bg-white/5'
                 }`}
             >

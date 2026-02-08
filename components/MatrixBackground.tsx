@@ -66,7 +66,7 @@ const MatrixBackground: React.FC<MatrixBackgroundProps> = ({ opacity = 0.15 }) =
     for (let i = 0; i < particleCount; i++) {
       const char = chars[Math.floor(Math.random() * chars.length)];
       const brightness = Math.random() * 0.5 + 0.1;
-      const color = `rgba(34, 197, 94, ${brightness})`;
+      const color = `rgba(99, 102, 241, ${brightness})`;
 
       const texture = createCharTexture(char, color);
       const material = new THREE.SpriteMaterial({
@@ -94,7 +94,7 @@ const MatrixBackground: React.FC<MatrixBackgroundProps> = ({ opacity = 0.15 }) =
 
     // Grid lines
     const gridMaterial = new THREE.LineBasicMaterial({
-      color: 0x22c55e,
+      color: 0x6366f1,
       transparent: true,
       opacity: 0.03
     });
@@ -142,7 +142,7 @@ const MatrixBackground: React.FC<MatrixBackgroundProps> = ({ opacity = 0.15 }) =
           if (Math.random() > 0.7) {
             const newChar = chars[Math.floor(Math.random() * chars.length)];
             const brightness = Math.random() * 0.5 + 0.1;
-            const color = `rgba(34, 197, 94, ${brightness})`;
+            const color = `rgba(99, 102, 241, ${brightness})`;
             const texture = createCharTexture(newChar, color);
             (particle.mesh.material as THREE.SpriteMaterial).map = texture;
             (particle.mesh.material as THREE.SpriteMaterial).opacity = brightness * opacity * 2;

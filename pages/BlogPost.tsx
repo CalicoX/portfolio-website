@@ -143,7 +143,7 @@ const BlogPostPage: React.FC = () => {
       {showScrollTop && typeof document !== 'undefined' && createPortal(
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 w-12 h-12 bg-accent text-black rounded-full flex items-center justify-center shadow-lg hover:bg-accent/80 transition-all duration-300 hover:scale-110 z-[9999]"
+          className="fixed bottom-8 right-8 w-12 h-12 bg-accent text-white rounded-full flex items-center justify-center shadow-lg hover:bg-accent/80 transition-all duration-300 hover:scale-110 z-[9999]"
           aria-label="Back to top"
         >
           <ArrowUp size={20} />
@@ -164,7 +164,7 @@ const BlogPostPage: React.FC = () => {
       {/* Header Section */}
       <div className="mb-8">
         {/* Category */}
-        <span className="inline-block px-3 py-1 bg-accent/90 text-black text-xs font-bold rounded-full mb-4">
+        <span className="inline-block px-3 py-1 bg-accent/90 text-white text-xs font-bold rounded-full mb-4">
           {post.category}
         </span>
 
@@ -298,7 +298,7 @@ const BlogPostPage: React.FC = () => {
           <button
             type="submit"
             disabled={submitting || !commentAuthor.trim() || !commentContent.trim()}
-            className="inline-flex items-center gap-2 px-5 py-2 bg-accent text-black text-sm font-bold rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-5 py-2 bg-accent text-white text-sm font-bold rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send size={14} />
             {submitting ? 'Submitting...' : 'Submit'}

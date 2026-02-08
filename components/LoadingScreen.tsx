@@ -27,7 +27,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
 
   const TOTAL_BLOCKS = 144;
   const GRID_SIZE = 12;
-  const COLORS = ['#22c55e', '#16a34a', '#15803d', '#14532d', '#a3e635', '#84cc16'];
+  const COLORS = ['#6366f1', '#4f46e5', '#4338ca', '#3730a3', '#818cf8', '#a5b4fc'];
 
   useEffect(() => {
     // If already completed, finish immediately
@@ -143,7 +143,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 50%, rgba(34, 197, 94, 0.03) 90%, rgba(34, 197, 94, 0.08) 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 50%, rgba(99, 102, 241, 0.03) 90%, rgba(99, 102, 241, 0.08) 100%)',
         }}
       />
 
@@ -155,7 +155,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         <div
           className="w-full h-0.5 bg-white/10 absolute left-0 animate-[scanline_2.5s_linear_infinite]"
           style={{
-            boxShadow: '0 0 30px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)',
+            boxShadow: '0 0 30px rgba(99, 102, 241, 0.5), 0 0 60px rgba(99, 102, 241, 0.3)',
           }}
         />
         {/* Secondary dim scanline */}
@@ -163,14 +163,14 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
           className="w-full h-0.5 bg-white/5 absolute left-0 animate-[scanline_4s_linear_infinite]"
           style={{
             animationDelay: '1.25s',
-            boxShadow: '0 0 20px rgba(34, 197, 94, 0.3)',
+            boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)',
           }}
         />
         {/* Horizontal scanlines overlay */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(34, 197, 94, 0.03) 2px, rgba(34, 197, 94, 0.03) 4px)',
+            background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(99, 102, 241, 0.03) 2px, rgba(99, 102, 241, 0.03) 4px)',
             backgroundSize: '100% 4px',
           }}
         />
@@ -189,7 +189,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          boxShadow: 'inset 0 0 100px rgba(34, 197, 94, 0.1), inset 0 0 50px rgba(139, 92, 246, 0.05)',
+          boxShadow: 'inset 0 0 100px rgba(99, 102, 241, 0.1), inset 0 0 50px rgba(139, 92, 246, 0.05)',
         }}
       />
 
@@ -204,19 +204,18 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
           transform: 'perspective(1000px) scale(0.98)',
         }}
       >
-        {/* PORTFOLIO Title with pixel font style */}
+        {/* PORTFOLIO Title */}
         <div className="relative animate-[flicker_3s_infinite]">
           {titleGlitch ? (
             <h1
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-wider select-none text-center"
               style={{
-                fontFamily: '"Press Start 2P", "Courier New", monospace',
-                color: '#22c55e',
-                textShadow: '3px 0 #ff0000, -3px 0 #00ffff, 0 0 30px #22c55e, 0 0 50px rgba(34,197,94,0.8)',
+                fontFamily: '"Geist", system-ui, sans-serif',
+                color: '#6366f1',
+                textShadow: '3px 0 #ff0000, -3px 0 #00ffff, 0 0 30px #6366f1, 0 0 50px rgba(99,102,241,0.8)',
                 transform: `translate(${Math.random() * 8 - 4}px, ${Math.random() * 4 - 2}px) scale(${1 + Math.random() * 0.1})`,
                 filter: 'brightness(1.5) contrast(1.2) saturate(1.5)',
                 letterSpacing: '4px',
-                imageRendering: 'pixelated',
               }}
             >
               ▓▓░PORTFOLIO░▓▓
@@ -226,11 +225,10 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
               <h1
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-wider select-none text-center"
                 style={{
-                  fontFamily: '"Press Start 2P", "Courier New", monospace',
+                  fontFamily: '"Geist", system-ui, sans-serif',
                   textShadow: '0 0 20px rgba(255,255,255,0.5), 0 0 40px rgba(34,197,94,0.3), 2px 2px 4px rgba(0,0,0,0.8)',
                   letterSpacing: '4px',
-                  imageRendering: 'pixelated',
-                  filter: 'drop-shadow(0 0 10px rgba(34,197,94,0.5))',
+                    filter: 'drop-shadow(0 0 10px rgba(34,197,94,0.5))',
                 }}
               >
                 ▓▓░PORTFOLIO░▓▓
@@ -239,13 +237,12 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
               <div
                 className="absolute inset-0 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-wider select-none"
                 style={{
-                  fontFamily: '"Press Start 2P", "Courier New", monospace',
+                  fontFamily: '"Geist", system-ui, sans-serif',
                   color: '#ff0000',
                   opacity: 0.25,
                   transform: 'translate(-2px, 0)',
                   letterSpacing: '4px',
-                  imageRendering: 'pixelated',
-                  mixBlendMode: 'screen',
+                    mixBlendMode: 'screen',
                 }}
               >
                 ▓▓░PORTFOLIO░▓▓
@@ -253,13 +250,12 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
               <div
                 className="absolute inset-0 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-wider select-none"
                 style={{
-                  fontFamily: '"Press Start 2P", "Courier New", monospace',
+                  fontFamily: '"Geist", system-ui, sans-serif',
                   color: '#00ffff',
                   opacity: 0.25,
                   transform: 'translate(2px, 0)',
                   letterSpacing: '4px',
-                  imageRendering: 'pixelated',
-                  mixBlendMode: 'screen',
+                    mixBlendMode: 'screen',
                 }}
               >
                 ▓▓░PORTFOLIO░▓▓
@@ -275,7 +271,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             gridTemplateRows: `repeat(${GRID_SIZE}, 1fr)`,
             width: 'min(320px, calc(100vw - 40px))',
             height: 'min(320px, calc(100vw - 40px))',
-            boxShadow: '0 0 30px rgba(34, 197, 94, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.5)',
+            boxShadow: '0 0 30px rgba(99, 102, 241, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.5)',
           }}
         >
           <div className="absolute -top-1 -left-1 w-3 h-3 md:w-4 md:h-4 border-t-2 border-l-2 border-accent" />
@@ -285,7 +281,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
 
           {blocks.map((lit, index) => {
             const isGlitch = glitchIndex.includes(index);
-            const color = blockColors.current[index] || '#22c55e';
+            const color = blockColors.current[index] || '#6366f1';
             return (
               <div
                 key={index}
@@ -295,7 +291,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
                   backgroundColor: lit ? (isGlitch ? '#a3e635' : color) : '#18181b',
                   boxShadow: lit
                     ? (isGlitch
-                      ? `0 0 15px ${color}, 0 0 25px ${color}, 0 0 35px #22c55e`
+                      ? `0 0 15px ${color}, 0 0 25px ${color}, 0 0 35px #6366f1`
                       : `0 0 8px ${color}, 0 0 15px rgba(34,197,94,0.5)`)
                     : 'inset 0 0 5px rgba(0,0,0,0.5)',
                 }}
@@ -312,7 +308,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             <span
               className="text-accent font-mono text-lg md:text-xl font-bold"
               style={{
-                textShadow: '0 0 10px #22c55e, 0 0 20px rgba(34,197,94,0.6)',
+                textShadow: '0 0 10px #6366f1, 0 0 20px rgba(99,102,241,0.6)',
               }}
             >
               {Math.round(progress)}%
@@ -327,12 +323,12 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             <div
               className="absolute inset-0 opacity-10"
               style={{
-                backgroundImage: 'linear-gradient(90deg, transparent 19px, #22c55e 20px)',
+                backgroundImage: 'linear-gradient(90deg, transparent 19px, #6366f1 20px)',
                 backgroundSize: '20px 100%',
               }}
             />
             <div
-              className="h-full bg-gradient-to-r from-accent via-green-400 to-lime-400 transition-all duration-75 ease-out relative"
+              className="h-full bg-gradient-to-r from-accent via-indigo-400 to-purple-400 transition-all duration-75 ease-out relative"
               style={{
                 width: `${progress}%`,
               }}

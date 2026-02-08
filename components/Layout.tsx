@@ -28,46 +28,86 @@ const Layout: React.FC = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // Setup global game controller cursor
+  // Setup global dot cursor with contrast inversion
   useEffect(() => {
-    // Create SVG cursor from the game controller icon
-    const svgString = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 1024 1024">
-        <path fill="rgba(34, 197, 94, 0.9)" d="M295.279309 796.959276v90.563554h45.422186v-90.563554z m-45.49239-90.633758V615.481146H204.645551v90.844372h45.141368v90.633758h45.49239v-90.633758zM159.012752 569.848348V479.214589h90.774167v-45.49239H113.379953v136.126149h45.632799v45.632798H204.645551v-45.632798z m135.564514-45.281777v135.985739h46.124229v-589.716166h-46.124229v408.589058h-44.790347v45.351982zM431.545866 25.203346H340.701495v45.422185h90.844371z m0 272.252296v182.180173h45.351981V297.455642H567.60181v-45.351981H476.897847V70.625531h-45.351981v226.830111zM567.60181 479.214589h45.351981V342.456602h91.265597v-45.00096H567.60181v181.758947z m136.406966 45.351982h45.351981V388.580831h45.351981v-46.124229H704.008776v182.109969z m135.845331-90.844372v-45.141368h-45.141369v45.141368z m0 0v317.885096H885.627314V433.722199z m-45.351982 454.011244h45.351982v-136.126148h-45.141369z m-45.351981 90.142328H385.983272v-90.352941h-45.281777v136.47717h454.011243v-136.266557h-45.351981z"/>
-        <path fill="rgba(34, 197, 94, 0.4)" d="M382.824078 908.022487l7.792678 72.521048 408.097628 2.246538 4.493075-105.938297 16.708625-9.337173 45.422186-136.126148 22.605786-252.665296-22.605786-65.2198-45.422186-45.141368-90.703963-46.124229-136.406965-44.930755-114.081997-28.292335-21.973947-198.607981-58.339778-34.400109-32.504594 34.400109-20.991087 306.792815-12.285754 127.069793-57.637734-25.203345-107.412588-24.922529 16.638421 115.486083 45.632798 45.141369 90.844372 45.49239 90.633758 45.422185 90.633758 16.919238 40.648293z"/>
-      </svg>
-    `;
-
-    const blob = new Blob([svgString], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    cursorUrlRef.current = url;
-
-    // Add global cursor style with highest priority
+    // Add global cursor style to hide default cursor
     const styleTag = document.createElement('style');
     styleTag.id = 'global-cursor-style';
     styleTag.innerHTML = `
+      /* Hide default cursor */
       * {
-        cursor: url('${url}') 0 16, auto !important;
+        cursor: none !important;
       }
       html, body {
-        cursor: url('${url}') 0 16, auto !important;
+        cursor: none !important;
       }
       a, button, input, textarea, select, [role="button"] {
-        cursor: url('${url}') 0 16, pointer !important;
+        cursor: none !important;
+      }
+      /* Custom cursor with contrast inversion effect */
+      .cursor-overlay {
+        position: fixed;
+        width: 16px;
+        height: 16px;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+        mix-blend-mode: difference;
+        z-index: 99999;
+        transform: translate(-50%, -50%);
+        transition: transform 0.1s ease-out;
       }
     `;
-    // Insert at the end of head to ensure it overrides other styles
     document.head.appendChild(styleTag);
     cursorStyleRef.current = styleTag;
+
+    // Create custom cursor overlay for contrast inversion effect
+    const cursorOverlay = document.createElement('div');
+    cursorOverlay.className = 'cursor-overlay';
+    cursorOverlay.id = 'custom-cursor-overlay';
+    document.body.appendChild(cursorOverlay);
+
+    // Track mouse movement
+    const handleMouseMove = (e: MouseEvent) => {
+      cursorOverlay.style.left = e.clientX + 'px';
+      cursorOverlay.style.top = e.clientY + 'px';
+    };
+
+    // Handle hover states (scale up on interactive elements)
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'A' ||
+        target.tagName === 'BUTTON' ||
+        target.closest('a') ||
+        target.closest('button') ||
+        target.getAttribute('role') === 'button' ||
+        target.classList.contains('cursor-pointer')
+      ) {
+        cursorOverlay.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      }
+    };
+
+    const handleMouseOut = () => {
+      cursorOverlay.style.transform = 'translate(-50%, -50%) scale(1)';
+    };
+
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
+    document.addEventListener('mouseover', handleMouseOver, { passive: true });
+    document.addEventListener('mouseout', handleMouseOut, { passive: true });
 
     return () => {
       // Clean up
       if (cursorStyleRef.current) {
         document.head.removeChild(cursorStyleRef.current);
       }
-      if (cursorUrlRef.current) {
-        URL.revokeObjectURL(cursorUrlRef.current);
+      const overlay = document.getElementById('custom-cursor-overlay');
+      if (overlay) {
+        document.body.removeChild(overlay);
       }
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseover', handleMouseOver);
+      document.removeEventListener('mouseout', handleMouseOut);
     };
   }, []);
 

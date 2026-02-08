@@ -48,7 +48,7 @@ const SpotlightCard: React.FC<{
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         style={{
           background: isHovered
-            ? `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(34, 197, 94, 0.4), transparent 50%)`
+            ? `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.4), transparent 50%)`
             : 'none',
         }}
       />
@@ -57,7 +57,7 @@ const SpotlightCard: React.FC<{
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
         style={{
           background: isHovered
-            ? `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(34, 197, 94, 0.25), transparent 60%)`
+            ? `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.25), transparent 60%)`
             : 'none',
         }}
       />
@@ -66,7 +66,7 @@ const SpotlightCard: React.FC<{
         className="pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         style={{
           background: isHovered
-            ? `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(34, 197, 94, 0.6), transparent 70%)`
+            ? `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.6), transparent 70%)`
             : 'none',
           WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
           mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
@@ -136,7 +136,7 @@ const TypewriterText: React.FC<{ text: string; delay?: number }> = ({ text, dela
           <span
             className="animate-shake-glow text-accent font-bold inline-block relative"
             style={{
-              textShadow: '0 0 10px #22c55e, 0 0 20px #22c55e, 0 0 30px #22c55e, 0 0 40px rgba(34,197,94,0.8), 0 0 80px rgba(34,197,94,0.6)',
+              textShadow: '0 0 10px #6366f1, 0 0 20px #6366f1, 0 0 30px #6366f1, 0 0 40px rgba(99,102,241,0.8), 0 0 80px rgba(99,102,241,0.6)',
               filter: 'brightness(1.3)',
             }}
           >
@@ -147,7 +147,7 @@ const TypewriterText: React.FC<{ text: string; delay?: number }> = ({ text, dela
           <span
             className="animate-pulse text-accent inline-block ml-0.5"
             style={{
-              textShadow: '0 0 8px #22c55e, 0 0 16px #22c55e',
+              textShadow: '0 0 8px #6366f1, 0 0 16px #6366f1',
             }}
           >
             █
@@ -165,7 +165,7 @@ const BENTO_ITEMS = [
     title: 'UI Design',
     description: 'Web & Mobile interfaces',
     link: '/ui-design',
-    image: 'https://placehold.co/1200x400/18181b/22c55e/png?text=UI+Design', // 替换成你的图片URL
+    image: 'https://placehold.co/1200x400/18181b/6366f1/png?text=UI+Design', // 替换成你的图片URL
     size: 'col-span-3 row-span-1',
   },
   {
@@ -181,7 +181,7 @@ const BENTO_ITEMS = [
     title: 'Graphic Design',
     description: 'Branding & Illustration',
     link: '/graphic-design',
-    image: 'https://placehold.co/800x400/18181b/22c55e/png?text=Graphic+Design', // 替换成你的图片URL
+    image: 'https://placehold.co/800x400/18181b/6366f1/png?text=Graphic+Design', // 替换成你的图片URL
     size: 'col-span-2 row-span-1',
   },
 ];
@@ -251,7 +251,7 @@ const TerminalExperience: React.FC<{ experience: typeof EXPERIENCES[number]; ind
     <div className="font-mono mb-4 p-3 md:p-4 bg-zinc-900/50 border border-zinc-800 rounded backdrop-blur-md">
       <div className="flex gap-2 items-center min-h-[24px]">
         <span className="text-accent text-xs md:text-base">$</span>
-        <span className="pixel-font text-xs md:text-base" style={{ color }}>{displayText}</span>
+        <span className="text-xs md:text-base font-medium" style={{ color }}>{displayText}</span>
         {showCursor && !isDeleting && <span className="animate-pulse text-xs md:text-base" style={{ color }}>_</span>}
       </div>
       <div className="text-zinc-500 text-[10px] md:text-xs mt-2 md:mt-3 pl-3 md:pl-4">{experience.description}</div>
@@ -410,7 +410,7 @@ const Home: React.FC = () => {
           </p>
 
           <div className="flex justify-center lg:justify-start pt-4">
-            <Link to="/contact" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 md:px-6 md:py-3 bg-accent text-black font-semibold hover:bg-accent/90 transition-colors text-sm md:text-base">
+            <Link to="/contact" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 md:px-6 md:py-3 bg-accent text-white font-semibold hover:bg-accent/90 transition-colors text-sm md:text-base">
               Hire Me <ArrowRight size={16} />
             </Link>
           </div>
@@ -430,10 +430,6 @@ const Home: React.FC = () => {
       {/* Skills */}
       <section>
         <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-8">Skills & Tools</h2>
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
-          .pixel-font { font-family: 'Silkscreen', monospace; }
-        `}</style>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {SKILLS.map((skill) => (
             <SpotlightCard key={skill.id}>
@@ -446,8 +442,7 @@ const Home: React.FC = () => {
                   className="w-7 h-7"
                 />
 
-                {/* Name - pixel font with increased margin */}
-                <h3 className="pixel-font text-sm text-white text-center mt-5">{skill.name}</h3>
+                <h3 className="text-sm font-medium text-white text-center mt-5">{skill.name}</h3>
               </div>
             </SpotlightCard>
           ))}
@@ -506,7 +501,7 @@ const Home: React.FC = () => {
                     background: 'repeating-linear-gradient(90deg, #52525b 0px, #52525b 8px, transparent 8px, transparent 12px)',
                   }} />
                   {/* View button in title bar - no border */}
-                  <span className="pixel-font text-xs text-zinc-500 group-hover:text-accent transition-colors">
+                  <span className="text-xs font-medium text-zinc-500 group-hover:text-accent transition-colors">
                     VIEW
                   </span>
                 </div>
@@ -514,7 +509,7 @@ const Home: React.FC = () => {
                 {/* Content Area */}
                 <div className="relative z-10 p-6 h-full flex flex-col justify-start pt-4">
                   {/* Title */}
-                  <h3 className="pixel-font text-lg mb-2 text-white group-hover:text-accent transition-colors drop-shadow-lg">
+                  <h3 className="text-lg font-semibold mb-2 text-white group-hover:text-accent transition-colors drop-shadow-lg">
                     {item.title}
                   </h3>
 

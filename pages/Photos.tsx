@@ -178,7 +178,6 @@ const Photos: React.FC = () => {
 
       {/* Cover Flow Styles */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
         .coverflow-container {
           perspective: 1000px;
           perspective-origin: 50% 50%;
@@ -207,7 +206,6 @@ const Photos: React.FC = () => {
           mask-image: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 70%);
           -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 70%);
         }
-        .pixel-font { font-family: 'Silkscreen', monospace; }
         .content-blur {
           filter: blur(10px) brightness(0.5);
           transition: filter 0.3s ease;
@@ -304,9 +302,9 @@ const Photos: React.FC = () => {
 
             {/* Position Indicator */}
             <div className="absolute top-4 right-4 z-50 px-3 py-1.5 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700 rounded-full">
-              <span className="pixel-font text-xs text-accent">{currentIndex + 1}</span>
+              <span className="text-xs font-semibold text-accent">{currentIndex + 1}</span>
               <span className="text-zinc-500 text-xs mx-1">/</span>
-              <span className="pixel-font text-xs text-zinc-400">{photos.length}</span>
+              <span className="text-xs font-medium text-zinc-400">{photos.length}</span>
             </div>
 
             {/* Cover Flow Container */}

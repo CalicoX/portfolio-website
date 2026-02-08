@@ -45,7 +45,7 @@ const Blog: React.FC = () => {
               onClick={() => setFilterCategory(category)}
               className={`px-4 py-2 rounded-lg font-mono text-sm transition-all border-2 ${
                 filterCategory === category
-                  ? 'bg-accent text-black border-accent'
+                  ? 'bg-accent text-white border-accent'
                   : 'bg-zinc-900/50 text-zinc-400 border-zinc-700 hover:border-accent hover:text-accent'
               }`}
             >
@@ -90,7 +90,7 @@ const Blog: React.FC = () => {
 
                 {/* Category Badge */}
                 <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-accent/90 text-black text-xs font-bold rounded-full font-mono">
+                  <span className="px-3 py-1 bg-accent/90 text-white text-xs font-bold rounded-full font-mono">
                     {post.category}
                   </span>
                 </div>
@@ -98,7 +98,7 @@ const Blog: React.FC = () => {
 
               {/* Content */}
               <div className="p-6">
-                <h3 className="pixel-font text-xl text-white mb-3 group-hover:text-accent transition-colors line-clamp-2">
+                <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-accent transition-colors line-clamp-2">
                   {post.title}
                 </h3>
 

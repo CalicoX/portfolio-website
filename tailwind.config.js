@@ -11,8 +11,8 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['"Geist Mono"', 'monospace'],
-                mono: ['"Geist Mono"', 'monospace'],
+                sans: ['"Geist"', 'system-ui', 'sans-serif'],
+                mono: ['monospace'],
             },
             colors: {
                 background: '#09090b',
@@ -26,7 +26,7 @@ export default {
                     foreground: '#fafafa',
                 },
                 accent: {
-                    DEFAULT: '#22c55e',
+                    DEFAULT: '#6366f1',
                     foreground: '#ffffff',
                 },
                 // Shadcn specific mappings

@@ -234,8 +234,8 @@ npm run deploy
 
 | 时间 | 分支 | 提交 | 说明 |
 |------|------|------|------|
+| 2026-02-08 17:25 | Home-Macmini | dcba9b9 | docs: 移除 Contentful blogPost 说明 |
 | 2026-02-08 17:08 | Home-Macmini | 9d047bb | docs: 更新 MEMORY.md |
 | 2026-02-08 17:06 | Home-Macmini | 0ef6700 | fix: Blog 详情页改进 - 添加回到顶部按钮（使用 Portal），修复字体 |
 | 2026-02-08 16:46 | Home-Macmini | 6f69499 | feat: Blog 详情页改进 - 添加回到顶部按钮，改用 sans-serif 字体 |
 | 2026-02-08 16:34 | Home-Macmini | 3d0a14e | fix: 添加 VITE_NOTION_API_URL 到 GitHub Actions |
-| 2026-02-08 16:31 | Home-Macmini | f73f5ca | fix: 添加 Notion API 备用 URL 以支持 GitHub Pages 部署 |
