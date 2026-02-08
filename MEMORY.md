@@ -167,6 +167,8 @@ npm run deploy
 | 时间 | 分支 | 提交 | 说明 |
 |------|------|------|------|
 
+| 2026-02-08 16:19 | Home-Macmini | 052cd22 | feat: integrate Notion as blog CMS with Cloudflare Worker proxy |
+| 2026-02-08 13:45 | Home-Macmini | d729c25 | docs: add commit history tracking to MEMORY.md |
 | 2026-02-08 13:45 | Home-Macmini | 6dd1f39 | test: verify post-commit hook works correctly |
 | 2026-02-08 13:44 | Home-Macmini | 4503d00 | chore: add auto-update MEMORY.md hook |
 | 2026-02-08 13:44 | Home-Macmini | 32c520a | test: verify hook v2 |
