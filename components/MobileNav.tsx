@@ -75,7 +75,7 @@ const MobileNav: React.FC = () => {
               <div className={`relative p-0.5 rounded-full transition-all duration-300 ${isActive ? 'scale-105' : 'scale-100'}`}>
                 <Icon
                   size={18}
-                  className={`transition-all duration-300 ${isActive ? 'stroke-accent drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]' : ''}`}
+                  className={`transition-all duration-300 ${isActive ? 'stroke-accent drop-shadow-[0_0_8px_rgba(129,140,248,0.6)]' : ''}`}
                   strokeWidth={isActive ? 2.5 : 2}
                 />
               </div>

@@ -14,7 +14,6 @@ const Layout: React.FC = () => {
   const [isLoading, setIsLoading] = useState(!loadingAlreadyComplete);
   const [isReady, setIsReady] = useState(loadingAlreadyComplete);
   const cursorStyleRef = useRef<HTMLStyleElement | null>(null);
-  const cursorUrlRef = useRef<string | null>(null);
 
   // Redirect to standalone admin panel
   const handleSecretTrigger = () => {
@@ -28,34 +27,42 @@ const Layout: React.FC = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // Setup global dot cursor with contrast inversion
+  // Setup global dot cursor with contrast inversion (desktop only via CSS media query)
   useEffect(() => {
     // Add global cursor style to hide default cursor
     const styleTag = document.createElement('style');
     styleTag.id = 'global-cursor-style';
     styleTag.innerHTML = `
-      /* Hide default cursor */
-      * {
-        cursor: none !important;
+      /* Hide default cursor - desktop only */
+      @media (hover: hover) and (pointer: fine) {
+        * {
+          cursor: none !important;
+        }
+        html, body {
+          cursor: none !important;
+        }
+        a, button, input, textarea, select, [role="button"] {
+          cursor: none !important;
+        }
+        /* Custom cursor with contrast inversion effect */
+        .cursor-overlay {
+          position: fixed;
+          width: 16px;
+          height: 16px;
+          background: white;
+          border-radius: 50%;
+          pointer-events: none;
+          mix-blend-mode: difference;
+          z-index: 99999;
+          transform: translate(-50%, -50%);
+          transition: transform 0.1s ease-out;
+        }
       }
-      html, body {
-        cursor: none !important;
-      }
-      a, button, input, textarea, select, [role="button"] {
-        cursor: none !important;
-      }
-      /* Custom cursor with contrast inversion effect */
-      .cursor-overlay {
-        position: fixed;
-        width: 16px;
-        height: 16px;
-        background: white;
-        border-radius: 50%;
-        pointer-events: none;
-        mix-blend-mode: difference;
-        z-index: 99999;
-        transform: translate(-50%, -50%);
-        transition: transform 0.1s ease-out;
+      /* Hide cursor overlay on touch devices */
+      @media (hover: none), (pointer: coarse) {
+        .cursor-overlay {
+          display: none !important;
+        }
       }
     `;
     document.head.appendChild(styleTag);

@@ -1,10 +1,82 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, Tag, ArrowRight } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 import { getBlogPosts } from '../lib/contentful';
 import type { BlogPost } from '../types';
 import MatrixBackground from '../components/MatrixBackground';
 import PageHeader from '../components/PageHeader';
+
+// 3D Tilt + Spotlight Card
+const TiltCard: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+  const borderRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    const glow = glowRef.current;
+    const border = borderRef.current;
+    if (!card || !glow || !border) return;
+
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    // Tilt: max 8 degrees
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+
+    card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+    // Spotlight glow follows cursor
+    glow.style.opacity = '1';
+    glow.style.background = `radial-gradient(circle 300px at ${x}px ${y}px, rgba(99, 102, 241, 0.35), rgba(139, 92, 246, 0.1), transparent)`;
+
+    // Gradient border follows cursor
+    border.style.opacity = '1';
+    border.style.background = `radial-gradient(circle 250px at ${x}px ${y}px, rgba(99, 102, 241, 1), rgba(139, 92, 246, 0.6), transparent)`;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    const card = cardRef.current;
+    const glow = glowRef.current;
+    const border = borderRef.current;
+    if (!card || !glow || !border) return;
+
+    card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    glow.style.opacity = '0';
+    border.style.opacity = '0';
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={className}
+      style={{ transition: 'transform 0.2s ease-out', transformStyle: 'preserve-3d', willChange: 'transform' }}
+    >
+      {/* Gradient border layer - behind content, follows cursor */}
+      <div
+        ref={borderRef}
+        className="absolute -inset-[2px] rounded-xl z-0 pointer-events-none"
+        style={{ opacity: 0, transition: 'opacity 0.3s ease-out' }}
+      />
+      {/* Inner wrapper for rounded clipping - isolated from 3D transform */}
+      <div className="absolute inset-0 rounded-xl overflow-hidden z-[1]">
+        {children}
+      </div>
+      {/* Spotlight overlay - on top */}
+      <div
+        ref={glowRef}
+        className="absolute inset-0 z-20 pointer-events-none rounded-xl"
+        style={{ opacity: 0, transition: 'opacity 0.3s ease-out' }}
+      />
+    </div>
+  );
+};
 
 const Blog: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -37,26 +109,29 @@ const Blog: React.FC = () => {
         title="Blog"
         description="Thoughts on design, development, and everything in between."
       >
-        {/* Category Filter */}
-        <div className="flex flex-wrap gap-3 mt-8">
+        {/* Category Filter - Swiss minimal tabs */}
+        <div className="flex items-center gap-1 mt-8 border-b border-zinc-800">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setFilterCategory(category)}
-              className={`px-4 py-2 rounded-lg font-mono text-sm transition-all border-2 ${
+              className={`relative px-4 py-2.5 text-sm transition-colors ${
                 filterCategory === category
-                  ? 'bg-accent text-white border-accent'
-                  : 'bg-zinc-900/50 text-zinc-400 border-zinc-700 hover:border-accent hover:text-accent'
+                  ? 'text-white'
+                  : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               {category}
+              {filterCategory === category && (
+                <span className="absolute bottom-0 left-0 right-0 h-px bg-white" />
+              )}
             </button>
           ))}
         </div>
       </PageHeader>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="bg-zinc-900/30 rounded-xl overflow-hidden animate-pulse">
               <div className="h-48 bg-zinc-800/50"></div>
@@ -72,77 +147,57 @@ const Blog: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {filteredPosts.map((post) => (
-            <Link
-              key={post.id}
-              to={`/blog/${post.slug}`}
-              className="group relative bg-zinc-900/40 border border-zinc-800/50 rounded-xl overflow-hidden hover:border-accent/50 transition-all duration-300"
-            >
-              {/* Cover Image */}
-              <div className="relative h-48 overflow-hidden">
+            <TiltCard key={post.id} className="relative aspect-[3/4] rounded-xl">
+              <Link
+                to={`/blog/${post.slug}`}
+                className="group absolute inset-0"
+              >
+                {/* Full Cover Image */}
                 <img
                   src={post.coverImage}
                   alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-105 group-hover:blur-[10px]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/50 to-transparent" />
+
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+
+                {/* Edge glow on hover */}
+                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ring-1 ring-accent/30 shadow-[0_0_20px_rgba(99,102,241,0.15)]" />
 
                 {/* Category Badge */}
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-accent/90 text-white text-xs font-bold rounded-full font-mono">
+                <div className="absolute top-4 left-4 z-10">
+                  <span className="px-2.5 py-1 bg-black/60 backdrop-blur-md text-white text-xs tracking-wide rounded-full">
                     {post.category}
                   </span>
                 </div>
-              </div>
 
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-accent transition-colors line-clamp-2">
-                  {post.title}
-                </h3>
+                {/* Content - floating on bottom */}
+                <div className="absolute inset-x-0 bottom-0 p-5 z-10">
+                  <h3 className="text-base font-semibold text-white mb-2 group-hover:text-accent transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
 
-                <p className="text-zinc-400 text-sm mb-4 line-clamp-3 leading-relaxed">
-                  {post.excerpt}
-                </p>
+                  <p className="text-zinc-300/80 text-xs mb-3 line-clamp-2 leading-relaxed">
+                    {post.excerpt}
+                  </p>
 
-                {/* Meta */}
-                <div className="flex items-center gap-4 text-xs text-zinc-500 font-mono mb-4">
-                  <div className="flex items-center gap-1">
-                    <Calendar size={14} />
-                    <span>{formatDate(post.publishDate)}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock size={14} />
-                    <span>{post.readTime}</span>
+                  {/* Meta */}
+                  <div className="flex items-center gap-3 text-xs text-zinc-400">
+                    <div className="flex items-center gap-1">
+                      <Calendar size={12} />
+                      <span>{formatDate(post.publishDate)}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock size={12} />
+                      <span>{post.readTime}</span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Tags */}
-                {post.tags && post.tags.length > 0 && (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Tag size={14} className="text-zinc-500" />
-                    {post.tags.slice(0, 3).map((tag, i) => (
-                      <span key={i} className="text-xs text-zinc-500 font-mono">
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* Read More Arrow */}
-                <div className="mt-4 flex items-center gap-2 text-accent text-sm font-mono opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span>READ MORE</span>
-                  <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-
-              {/* Pixel Corner Decorations */}
-              <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-accent/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-accent/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-accent/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-accent/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </Link>
+              </Link>
+            </TiltCard>
           ))}
         </div>
       )}
@@ -150,7 +205,7 @@ const Blog: React.FC = () => {
       {/* No Posts Message */}
       {!loading && filteredPosts.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-zinc-500 text-lg font-mono">No posts found in {filterCategory}</p>
+          <p className="text-zinc-500 text-base">No posts found in "{filterCategory}"</p>
         </div>
       )}
 
