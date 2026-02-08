@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <script>
     tailwind.config = {
@@ -17,8 +17,8 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Geist Mono"', 'monospace'],
-            mono: ['"Geist Mono"', 'monospace'],
+            sans: ['"Geist"', 'system-ui', 'sans-serif'],
+            mono: ['monospace'],
             inter: ['Inter', 'sans-serif'],
           },
           colors: {
@@ -37,7 +37,7 @@
             },
 
             accent: {
-              DEFAULT: '#22c55e',
+              DEFAULT: '#6366f1',
               foreground: 'hsl(var(--accent-foreground))',
             },
 
@@ -110,6 +110,20 @@
   </script>
   <style>
     :root {
+      /* =========================================
+         COLOR SYSTEM - Portfolio Website
+         =========================================
+         Primary:   indigo-500 (#6366f1) - accent, hover, focus states
+         Secondary: zinc-400 (#a1a1aa)   - muted text
+         Background:#09090b             - main background
+         Surface:   #18181b             - card/sidebar background
+         Text:      #fafafa             - primary text
+         Muted:     #a1a1aa             - secondary text
+         Border:    rgba(255,255,255,0.05) - borders
+
+         HSL Format: hue saturation% lightness%
+         ========================================= */
+
       /* Default Variables */
       --background: 240 10% 3.9%;
       --foreground: 0 0% 98%;
@@ -129,7 +143,7 @@
       --muted: 240 3.7% 15.9%;
       --muted-foreground: 240 5% 64.9%;
 
-      --accent: 142 70% 45%;
+      --accent: 239 84% 67%;
       --accent-foreground: 0 0% 98%;
 
       --destructive: 0 62.8% 30.6%;
@@ -137,7 +151,7 @@
 
       --border: 240 3.7% 15.9%;
       --input: 240 3.7% 15.9%;
-      --ring: 142 70% 50%;
+      --ring: 239 84% 67%;
 
       --radius: 0.5rem;
     }
@@ -161,10 +175,9 @@
       font-family: 'Inter', sans-serif !important;
     }
 
-    /* Global Reset for Site (Geist Mono) */
+    /* Global Reset for Site (Geist Sans) */
     * {
-      font-family: 'Geist Mono', monospace;
-      image-rendering: pixelated;
+      font-family: 'Geist', system-ui, -apple-system, sans-serif;
       border-color: hsl(var(--border));
     }
 
@@ -199,7 +212,7 @@
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #22c55e;
+      background: #6366f1;
     }
   </style>
   <script type="importmap">
@@ -210,7 +223,7 @@
         }
       }
     </script>
-  <script type="module" crossorigin src="/portfolio-website/assets/index-dvT2jsEK.js"></script>
+  <script type="module" crossorigin src="/portfolio-website/assets/index-CUtrgi1_.js"></script>
 </head>
 
 <body>
