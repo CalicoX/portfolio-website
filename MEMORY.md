@@ -154,9 +154,6 @@ VITE_NOTION_API_URL               # Notion API URL（Cloudflare Worker 地址）
 ### photo
 - 标题、地点、图片、宽高比、日期
 
-### blogPost
-- 标题、slug、摘要、内容、封面图、作者、发布日期、阅读时间、标签、分类
-
 ### navigation
 - 标签、路径、图标、排序、移动端简短文字
 
@@ -237,8 +234,8 @@ npm run deploy
 
 | 时间 | 分支 | 提交 | 说明 |
 |------|------|------|------|
+| 2026-02-08 17:08 | Home-Macmini | 9d047bb | docs: 更新 MEMORY.md |
 | 2026-02-08 17:06 | Home-Macmini | 0ef6700 | fix: Blog 详情页改进 - 添加回到顶部按钮（使用 Portal），修复字体 |
 | 2026-02-08 16:46 | Home-Macmini | 6f69499 | feat: Blog 详情页改进 - 添加回到顶部按钮，改用 sans-serif 字体 |
 | 2026-02-08 16:34 | Home-Macmini | 3d0a14e | fix: 添加 VITE_NOTION_API_URL 到 GitHub Actions |
 | 2026-02-08 16:31 | Home-Macmini | f73f5ca | fix: 添加 Notion API 备用 URL 以支持 GitHub Pages 部署 |
-| 2026-02-08 16:19 | Home-Macmini | 052cd22 | feat: integrate Notion as blog CMS with Cloudflare Worker proxy |
