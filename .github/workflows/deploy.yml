@@ -31,6 +31,7 @@ jobs:
           VITE_CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.VITE_CONTENTFUL_MANAGEMENT_TOKEN }}
           VITE_ADMIN_PASSWORD_HASH: ${{ secrets.VITE_ADMIN_PASSWORD_HASH }}
           VITE_TOTP_SECRET: ${{ secrets.VITE_TOTP_SECRET }}
+          VITE_NOTION_API_URL: ${{ secrets.VITE_NOTION_API_URL }}
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3

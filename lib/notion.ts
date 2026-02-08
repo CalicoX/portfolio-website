@@ -1,6 +1,6 @@
 import type { BlogPost, BlogComment } from '../types';
 
-const API_BASE = import.meta.env.VITE_NOTION_API_URL || 'https://portfolio-blog-api.pyh1234576.workers.dev';
+const API_BASE = import.meta.env.VITE_NOTION_API_URL || '';
 
 export const getNotionBlogPosts = async (): Promise<BlogPost[]> => {
   if (!API_BASE) {
